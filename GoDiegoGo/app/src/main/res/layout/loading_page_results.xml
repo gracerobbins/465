@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoadingPageActivity"
+    tools:context=".LoadingPageResultsActivity"
     android:background="@color/ghost_white">
 
     <LinearLayout
@@ -23,50 +23,11 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Transferring Your Music:"
+            android:text="Transerring Complete! The following songs could not be copied:"
             android:textColor="@color/black"
             android:textSize="11pt"
             android:layout_gravity="center_horizontal|top">
         </TextView>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal|top">
-            <ImageButton
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/spotify_icon_small"
-                android:scaleType="centerCrop"
-                android:backgroundTint="#00000000">
-            </ImageButton>
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/right_arrow"
-                android:scaleType="centerCrop">
-            </ImageView>
-            <ImageButton
-                android:id="@+id/main_menu"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/apple_music_logo"
-                android:scaleType="centerCrop"
-                android:backgroundTint="#00000000">
-            </ImageButton>
-        </LinearLayout>
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"></Space>
-        <ProgressBar
-            android:id="@+id/determinateBar"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:progress="25"
-            android:progressTint="@color/dark_electric_blue"
-            android:progressBackgroundTint="@color/white"/>
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -84,11 +45,11 @@
             android:layout_height="0dp"
             android:layout_weight="1"></Space>
         <Button xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/cancel_button"
+            android:id="@+id/main_menu_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/dark_spring_green"
-            android:text="Cancel"
+            android:text="Back to Main Menu"
             android:layout_gravity="center_horizontal|bottom">
         </Button>
         <Space

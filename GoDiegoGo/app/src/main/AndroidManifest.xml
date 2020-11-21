@@ -22,6 +22,9 @@
         <activity android:name=".LoadingPageActivity"
             android:parentActivityName=".MainActivity">
         </activity>
+        <activity android:name=".LoadingPageResultsActivity"
+            android:parentActivityName=".LoadingPageActivity">
+        </activity>
     </application>
 
 </manifest>

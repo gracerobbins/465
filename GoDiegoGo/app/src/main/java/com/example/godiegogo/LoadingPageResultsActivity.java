@@ -14,37 +14,29 @@ import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class LoadingPageActivity extends AppCompatActivity {
-    public LinkedList<String> copied_songs;
+public class LoadingPageResultsActivity extends AppCompatActivity {
+    public LinkedList<String> failed_songs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.loading_page);
+        setContentView(R.layout.loading_page_results);
 
-        copied_songs = new LinkedList<String>();
-        copied_songs.add("Song Name 1");
-        copied_songs.add("Song Name 2");
-        copied_songs.add("Song Name 3");
+        failed_songs = new LinkedList<String>();
+        failed_songs.add("Song Name 1");
+        failed_songs.add("Song Name 2");
+        failed_songs.add("Song Name 3");
 
         ListView lv = (ListView) findViewById(R.id.songlist);
         ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, copied_songs);
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, failed_songs);
         lv.setAdapter(itemsAdapter);
 
-        final Button button = findViewById(R.id.cancel_button);
+        final Button button = findViewById(R.id.main_menu_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 button.setBackgroundColor(Color.BLUE);
                 finish();
             }
         });
-
-
-//        try { Thread.sleep(5000); }
-//        catch (InterruptedException ex) { }
-
-        Intent intent = new Intent(this, LoadingPageResultsActivity.class);
-        startActivity(intent);
-        finish();
     }
 }
