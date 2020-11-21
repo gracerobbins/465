@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.EditText;
 import android.content.Intent;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import com.example.godiegogo.R;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
@@ -15,16 +16,38 @@ import android.widget.ArrayAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoadingPageActivity extends AppCompatActivity {
-    public LinkedList<String> copied_songs;
+    public ArrayList<String> copied_songs;
+    public ArrayList<String> failed_songs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_page);
 
-        copied_songs = new LinkedList<String>();
+        copied_songs = new ArrayList<String>();
         copied_songs.add("Song Name 1");
         copied_songs.add("Song Name 2");
         copied_songs.add("Song Name 3");
+        copied_songs.add("Song Name 1");
+        copied_songs.add("Song Name 2");
+        copied_songs.add("Song Name 3");
+        copied_songs.add("Song Name 1");
+        copied_songs.add("Song Name 2");
+        copied_songs.add("Song Name 3");
+        copied_songs.add("Song Name 1");
+        copied_songs.add("Song Name 2");
+        copied_songs.add("Song Name 3");
+
+        failed_songs = new ArrayList<String>();
+        failed_songs.add("Song Name 4");
+        failed_songs.add("Song Name 5");
+        failed_songs.add("Song Name 6");
+        failed_songs.add("Song Name 7");
+        failed_songs.add("Song Name 8");
+        failed_songs.add("Song Name 9");
+        failed_songs.add("Song Name 10");
+        failed_songs.add("Song Name 11");
+        failed_songs.add("Song Name 12");
+        failed_songs.add("Song Name 13");
 
         ListView lv = (ListView) findViewById(R.id.songlist);
         ArrayAdapter<String> itemsAdapter =
@@ -42,8 +65,12 @@ public class LoadingPageActivity extends AppCompatActivity {
 
 //        try { Thread.sleep(5000); }
 //        catch (InterruptedException ex) { }
-
+        Bundle b = new Bundle();
+        b.putStringArrayList("failed_songs", failed_songs);
         Intent intent = new Intent(this, LoadingPageResultsActivity.class);
+        intent.putExtras(b);
+
+        //Intent intent = new Intent(this, LoadingPageResultsActivity.class);
         startActivity(intent);
         finish();
     }

@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.EditText;
 import android.content.Intent;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import com.example.godiegogo.R;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
@@ -15,16 +16,14 @@ import android.widget.ArrayAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoadingPageResultsActivity extends AppCompatActivity {
-    public LinkedList<String> failed_songs;
+    public ArrayList<String> failed_songs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_page_results);
 
-        failed_songs = new LinkedList<String>();
-        failed_songs.add("Song Name 1");
-        failed_songs.add("Song Name 2");
-        failed_songs.add("Song Name 3");
+        Bundle b = this.getIntent().getExtras();
+        failed_songs=b.getStringArrayList("failed_songs");
 
         ListView lv = (ListView) findViewById(R.id.songlist);
         ArrayAdapter<String> itemsAdapter =
