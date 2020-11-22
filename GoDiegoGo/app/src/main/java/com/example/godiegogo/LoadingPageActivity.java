@@ -19,10 +19,14 @@ import androidx.appcompat.app.AppCompatActivity;
 public class LoadingPageActivity extends AppCompatActivity {
     public ArrayList<String> copied_songs;
     public ArrayList<String> failed_songs;
+    public ArrayList<String> checked_playlists;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_page);
+
+        Bundle b = this.getIntent().getExtras();
+        checked_playlists=b.getStringArrayList("checked_playlists");
 
         copied_songs = new ArrayList<String>();
         copied_songs.add("Song Name 1");
@@ -62,10 +66,6 @@ public class LoadingPageActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
-//        try { Thread.sleep(5000); }
-//        catch (InterruptedException ex) { }
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
