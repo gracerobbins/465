@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import com.example.godiegogo.R;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -65,13 +66,20 @@ public class LoadingPageActivity extends AppCompatActivity {
 
 //        try { Thread.sleep(5000); }
 //        catch (InterruptedException ex) { }
-        Bundle b = new Bundle();
-        b.putStringArrayList("failed_songs", failed_songs);
-        Intent intent = new Intent(this, LoadingPageResultsActivity.class);
-        intent.putExtras(b);
 
-        //Intent intent = new Intent(this, LoadingPageResultsActivity.class);
-        startActivity(intent);
-        finish();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                // yourMethod();
+                Bundle b = new Bundle();
+                b.putStringArrayList("failed_songs", failed_songs);
+                Intent intent = new Intent(LoadingPageActivity.this, LoadingPageResultsActivity.class);
+                intent.putExtras(b);
+
+                //Intent intent = new Intent(this, LoadingPageResultsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, 5000);   //5 seconds
     }
 }

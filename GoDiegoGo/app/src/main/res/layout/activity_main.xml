@@ -4,32 +4,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".LoadingPageActivity"
+    android:background="@color/ghost_white">
 
     <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingHorizontal="40dp">
 
-        <Button xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/button_id"
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"></Space>
+
+        <EditText
+            android:id="@+id/playlist_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Button :)"></Button>
+            android:text="Paste a playlist link here"
+            android:textColor="@color/black"
+            android:textSize="11pt"
+            android:layout_gravity="center_horizontal|top">
+        </EditText>
+        <LinearLayout
+            android:id="@+id/transfer_icon_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal|top">
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/spotify_icon_small"
+                android:scaleType="centerCrop"
+                android:backgroundTint="#00000000">
+            </ImageButton>
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/right_arrow"
+                android:scaleType="centerCrop">
+            </ImageView>
+            <ImageButton
+                android:id="@+id/main_menu"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/apple_music_logo"
+                android:scaleType="centerCrop"
+                android:backgroundTint="#00000000">
+            </ImageButton>
+        </LinearLayout>
+        <!-- swap icon taken from https://iconscout.com/icon/swap-1768053 -->
+        <ImageButton
+            android:id="@+id/swap_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/swap"
+            android:backgroundTint="#00000000"></ImageButton>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Or select from your playlists:"
+            android:textSize="11pt"
+            android:textColor="@color/black"></TextView>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"></Space>
+        <ListView
+            android:id="@+id/playlist_selector"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="12"
+            android:background="@color/white"
+            android:elevation="4dp">
+        </ListView>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"></Space>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/transfer_button"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_spring_green"
+                android:text="Transfer"
+                android:layout_gravity="center_horizontal|bottom">
+            </Button>
+            <Space
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="0dp"></Space>
+            <Button xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/sync_button"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_spring_green"
+                android:text="Sync"
+                android:layout_gravity="center_horizontal|bottom">
+            </Button>
+        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"></Space>
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
