@@ -19,17 +19,16 @@
             android:layout_height="0dp"
             android:layout_weight="2"></Space>
 
-        <EditText
-            android:id="@+id/playlist_link"
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Paste a playlist link here"
+            android:text="Transferring Your Music:"
             android:textColor="@color/black"
             android:textSize="11pt"
             android:layout_gravity="center_horizontal|top">
-        </EditText>
+        </TextView>
         <LinearLayout
-            android:id="@+id/transfer_icon_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -56,27 +55,24 @@
                 android:backgroundTint="#00000000">
             </ImageButton>
         </LinearLayout>
-        <!-- swap icon taken from https://iconscout.com/icon/swap-1768053 -->
-        <ImageButton
-            android:id="@+id/swap_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/swap"
-            android:backgroundTint="#00000000"></ImageButton>
-
-        <TextView
-            android:layout_width="wrap_content"
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"></Space>
+        <ProgressBar
+            android:id="@+id/determinateBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Or select from your playlists:"
-            android:textSize="11pt"
-            android:textColor="@color/black"></TextView>
+            android:progress="25"
+            android:progressTint="@color/dark_electric_blue"
+            android:progressBackgroundTint="@color/white"/>
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"></Space>
         <ListView
-            android:id="@+id/playlist_selector"
+            android:id="@+id/songlist"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="12"
@@ -87,33 +83,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"></Space>
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/transfer_button"
-                android:layout_width="0dp"
-                android:layout_weight="5"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/dark_spring_green"
-                android:text="Transfer"
-                android:layout_gravity="center_horizontal|bottom">
-            </Button>
-            <Space
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="0dp"></Space>
-            <Button xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/sync_button"
-                android:layout_width="0dp"
-                android:layout_weight="5"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/dark_spring_green"
-                android:text="Sync"
-                android:layout_gravity="center_horizontal|bottom">
-            </Button>
-        </LinearLayout>
+            android:backgroundTint="@color/dark_spring_green"
+            android:text="Cancel"
+            android:layout_gravity="center_horizontal|bottom">
+        </Button>
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"

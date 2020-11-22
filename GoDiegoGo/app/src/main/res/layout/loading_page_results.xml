@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoadingPageResultsActivity"
+    android:background="@color/ghost_white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingHorizontal="40dp">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"></Space>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transerring Complete! The following songs could not be copied:"
+            android:textColor="@color/black"
+            android:textSize="11pt"
+            android:layout_gravity="center_horizontal|top">
+        </TextView>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"></Space>
+        <ListView
+            android:id="@+id/songlist"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="12"
+            android:background="@color/white"
+            android:elevation="4dp">
+        </ListView>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"></Space>
+        <Button xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/main_menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/dark_spring_green"
+            android:text="Back to Main Menu"
+            android:layout_gravity="center_horizontal|bottom">
+        </Button>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"></Space>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

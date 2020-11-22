@@ -16,6 +16,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginPromptActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".LoadingPageActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".LoadingPageResultsActivity"
+            android:parentActivityName=".LoadingPageActivity">
+        </activity>
     </application>
 
 </manifest>
