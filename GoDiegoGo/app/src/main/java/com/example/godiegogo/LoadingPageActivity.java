@@ -13,8 +13,11 @@ import com.example.godiegogo.R;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.os.Handler;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.w3c.dom.Text;
 
 public class LoadingPageActivity extends AppCompatActivity {
     public ArrayList<String> copied_songs;
@@ -27,6 +30,9 @@ public class LoadingPageActivity extends AppCompatActivity {
 
         Bundle b = this.getIntent().getExtras();
         checked_playlists=b.getStringArrayList("checked_playlists");
+        String transfer_type = b.getString("transfer_type");
+        TextView transfer_header = (TextView)findViewById(R.id.transfer_header);
+        transfer_header.setText(transfer_type + " Your Music:");
 
         copied_songs = new ArrayList<String>();
         copied_songs.add("Song Name 1");
@@ -73,6 +79,7 @@ public class LoadingPageActivity extends AppCompatActivity {
                 // yourMethod();
                 Bundle b = new Bundle();
                 b.putStringArrayList("failed_songs", failed_songs);
+                b.putString("transfer_type", transfer_type);
                 Intent intent = new Intent(LoadingPageActivity.this, LoadingPageResultsActivity.class);
                 intent.putExtras(b);
 

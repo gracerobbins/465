@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import com.example.godiegogo.R;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,9 @@ public class LoadingPageResultsActivity extends AppCompatActivity {
 
         Bundle b = this.getIntent().getExtras();
         failed_songs=b.getStringArrayList("failed_songs");
+        String transfer_type = b.getString("transfer_type");
+        TextView results_header = (TextView)findViewById(R.id.results_header);
+        results_header.setText(transfer_type + " Complete! The following songs could not be copied:");
 
         ListView lv = (ListView) findViewById(R.id.songlist);
         ArrayAdapter<String> itemsAdapter =
@@ -33,7 +37,6 @@ public class LoadingPageResultsActivity extends AppCompatActivity {
         final Button button = findViewById(R.id.main_menu_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                button.setBackgroundColor(Color.BLUE);
                 finish();
             }
         });

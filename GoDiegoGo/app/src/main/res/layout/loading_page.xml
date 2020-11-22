@@ -20,10 +20,10 @@
             android:layout_weight="2"></Space>
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/transfer_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Transferring Your Music:"
+            android:text="Placeholder:"
             android:textColor="@color/black"
             android:textSize="11pt"
             android:layout_gravity="center_horizontal|top">

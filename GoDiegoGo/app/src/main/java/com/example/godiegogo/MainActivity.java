@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putStringArrayList("checked_playlists", checked_playlists);
+                b.putString("transfer_type", "Transferring");
                 Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
                 intent.putExtras(b);
                 startActivity(intent);
@@ -86,7 +87,11 @@ public class MainActivity extends AppCompatActivity {
         final Button sync_button = findViewById(R.id.sync_button);
         sync_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Bundle b = new Bundle();
+                b.putStringArrayList("checked_playlists", checked_playlists);
+                b.putString("transfer_type", "Syncing");
                 Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
+                intent.putExtras(b);
                 startActivity(intent);
             }
         });
