@@ -1,2 +1,4 @@
+include ':musickitauth-release-1.1.0'
+include ':mediaplayback-release-1.1.1'
 include ':app'
 rootProject.name = "GoDiegoGo"
