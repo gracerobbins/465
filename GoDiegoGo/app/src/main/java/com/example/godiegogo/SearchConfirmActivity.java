@@ -1,4 +1,5 @@
 package com.example.godiegogo;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +36,7 @@ public class SearchConfirmActivity extends AppCompatActivity {
     private final OkHttpClient mOkHttpClient_name = new OkHttpClient();
     private ArrayAdapter<String> itemsAdapter;
     private String playlistName;
+    public String playlistId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class SearchConfirmActivity extends AppCompatActivity {
         accessToken = b.getString("accessToken");
         if (url.contains("spotify")) {
             // do spotify stuff
-            String playlistId = url.substring(url.lastIndexOf("/") + 1);
+            playlistId = url.substring(url.lastIndexOf("/") + 1);
             final Request request = new Request.Builder()
                     .url("https://api.spotify.com/v1/playlists/" + playlistId + "/tracks?limit=10")
                     .addHeader("Authorization","Bearer " + accessToken)
@@ -122,6 +124,13 @@ public class SearchConfirmActivity extends AppCompatActivity {
                         System.out.println(playlist_songs.size());
                         Log.d("PlayListNames", playlist_songs.toString());
 
+
+//                        playlists.push()
+                        //transferring transfer type
+//                        Bundle b = new Bundle();
+//                        b.putString("url", urlString);
+//                        b.putString("accessToken", mAccessToken);
+
                     } catch (JSONException e) {
 //                        setResponse("Failed to parse data: " + e);
                     }
@@ -130,6 +139,14 @@ public class SearchConfirmActivity extends AppCompatActivity {
 
         } else if (url.contains("music.apple.com")) {
             // do apple music stuff
+            playlist_songs.add("Song Name 1");
+            playlist_songs.add("Song Name 2");
+            playlist_songs.add("Song Name 3");
+            playlist_songs.add("Song Name 4");
+            playlist_songs.add("Song Name 5");
+            playlist_songs.add("Song Name 6");
+            playlist_songs.add("Song Name 6");
+
         } else {
             // not spotify or apple
         }
@@ -138,6 +155,21 @@ public class SearchConfirmActivity extends AppCompatActivity {
         itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_songs);
         playlist_preview.setAdapter(itemsAdapter);
+
+        final Button am_select = findViewById(R.id.applemusicselect);
+        am_select.setOnClickListener(new View.OnClickListener() {
+               public void onClick(View v) {
+                   ArrayList<String> playlists = new ArrayList<String>();
+                   playlists.add(playlistId);
+                   Bundle b = new Bundle();
+                   b.putStringArrayList("checked_playlists", playlists);
+                   b.putString("transfer_type", "Transferring");
+                   Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
+                   intent.putExtras(b);
+                   startActivity(intent);
+               }
+        });
+
 
         final Button button = findViewById(R.id.search_cancel_button);
         button.setOnClickListener(new View.OnClickListener() {

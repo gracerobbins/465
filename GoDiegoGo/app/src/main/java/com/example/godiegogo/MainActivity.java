@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         transfer_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = new Bundle();
+                System.out.println(checked_playlists);
                 b.putStringArrayList("checked_playlists", checked_playlists);
                 b.putString("transfer_type", "Transferring");
                 Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
