@@ -16,6 +16,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< Updated upstream
+=======
+        <activity android:name=".LoginPromptActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".LoadingPageActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".LoadingPageResultsActivity"
+            android:parentActivityName=".LoadingPageActivity">
+        </activity>
+<!--        <activity android:name=".SearchConfirmActivity"-->
+<!--            android:parentActivityName=".MainActivity">-->
+<!--        </activity>-->
+        <activity android:name=".ServiceSelectorActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+>>>>>>> Stashed changes
     </application>
 
 </manifest>
