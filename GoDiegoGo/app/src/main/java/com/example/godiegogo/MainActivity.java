@@ -133,27 +133,7 @@ public class MainActivity extends AppCompatActivity {
         final Button transfer_button = findViewById(R.id.transfer_button);
         transfer_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Bundle b = new Bundle();
-                LinearLayout layout = findViewById(R.id.transfer_icon_list);
-                ImageButton leftButton = (ImageButton)layout.getChildAt(0);
-
-                b.putStringArrayList("checked_playlists", checked_playlists);
-                b.putStringArrayList("checked_playlist_ids", checked_playlist_ids);
-                Log.d("Transfer", "CheckedPlaylists: " + checked_playlists.toString());
-                Log.d("Transfer", "CheckedPlaylistIds: " + checked_playlist_ids.toString());
-
-                if (leftButton.getId() == spotify_button_id) {
-                    Log.d("Transfer", "Transferring Spotify Playlists");
-                    b.putString("transfer_type", "Transferring");
-                    b.putString("mAccessToken", mAccessToken);
-                    b.putString("userId", userId);
-                    b.putSerializable("transferFrom", Service.SPOTIFY);
-                    b.putSerializable("transferTo", Service.APPLE_MUSIC);
-                } else if (leftButton.getId() == apple_button_id) {
-                    Log.d("Transfer", "Transferring Apple Music Playlists");
-                    b.putSerializable("transferFrom", Service.APPLE_MUSIC);
-                    b.putSerializable("transferTo", Service.SPOTIFY);
-                }
+                Bundle b = getSyncOrTransferBundle();
 
                 Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
                 intent.putExtras(b);
@@ -164,9 +144,8 @@ public class MainActivity extends AppCompatActivity {
         final Button sync_button = findViewById(R.id.sync_button);
         sync_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Bundle b = new Bundle();
-                b.putStringArrayList("checked_playlists", checked_playlists);
-                b.putString("transfer_type", "Syncing");
+                Bundle b = getSyncOrTransferBundle();
+
                 Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
                 intent.putExtras(b);
                 startActivity(intent);
@@ -365,6 +344,32 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Playlist Selector", "Left button is Spotify; adding playlists.");
             setSpotifyMusicToSelector();
         }
+    }
+
+    private Bundle getSyncOrTransferBundle() {
+        Bundle b = new Bundle();
+        LinearLayout layout = findViewById(R.id.transfer_icon_list);
+        ImageButton leftButton = (ImageButton)layout.getChildAt(0);
+
+        b.putStringArrayList("checked_playlists", checked_playlists);
+        b.putStringArrayList("checked_playlist_ids", checked_playlist_ids);
+        Log.d("Transfer", "CheckedPlaylists: " + checked_playlists.toString());
+        Log.d("Transfer", "CheckedPlaylistIds: " + checked_playlist_ids.toString());
+
+        if (leftButton.getId() == spotify_button_id) {
+            Log.d("Transfer", "Transferring Spotify Playlists");
+            b.putString("transfer_type", "Transferring");
+            b.putString("mAccessToken", mAccessToken);
+            b.putString("userId", userId);
+            b.putSerializable("transferFrom", Service.SPOTIFY);
+            b.putSerializable("transferTo", Service.APPLE_MUSIC);
+        } else if (leftButton.getId() == apple_button_id) {
+            Log.d("Transfer", "Transferring Apple Music Playlists");
+            b.putSerializable("transferFrom", Service.APPLE_MUSIC);
+            b.putSerializable("transferTo", Service.SPOTIFY);
+        }
+
+        return b;
     }
 
 }
