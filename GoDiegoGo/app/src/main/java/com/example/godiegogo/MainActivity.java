@@ -31,6 +31,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     public ArrayList<String> playlist_names;
     public ArrayList<String> checked_playlists;
+    public ArrayList<String> appleMusicPlaylistIds;
     private GridView grid_view;
 
     @Override
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checked_playlists = new ArrayList<String>();
         playlist_names = new ArrayList<String>();
+        appleMusicPlaylistIds = new ArrayList<>();
 
         playlist_names.add("Playlist Name 1");
         playlist_names.add("Playlist Name 2");
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
                 int leftButtonID = leftButton.getId();
                 if (leftButtonID == 2131231049) {
-                    Log.d("Apple Music", "leftbuttonis apple music");
+                    Log.d("Apple Music", "Left button is apple music");
                     setAppleMusicToSelector();
                 }
             }
@@ -159,11 +161,16 @@ public class MainActivity extends AppCompatActivity {
                         JSONArray playlists = jsonObject.getJSONArray("data");
 
                         playlist_names.clear();
+                        appleMusicPlaylistIds.clear();
 
                         for (int i = 0; i < playlists.length(); i++) {
                             JSONObject playlist = playlists.getJSONObject(i);
                             JSONObject attributes = playlist.getJSONObject("attributes");
-                            playlist_names.add(attributes.getString("name"));
+                            if (attributes.getBoolean("canEdit")) {
+                                playlist_names.add(attributes.getString("name"));
+                                appleMusicPlaylistIds.add(playlist.getString("id"));
+                            }
+
                         }
 
                         ArrayAdapter<String> itemsAdapter =
