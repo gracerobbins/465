@@ -184,6 +184,17 @@ public class ServiceSelectorActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUESTCODE_APPLEMUSIC_AUTH) {
+            TokenResult tokenResult = appleAuthenticationManager.handleTokenResult(data);
+
+            if (!tokenResult.isError()) {
+                String appleMusicUserToken = tokenResult.getMusicUserToken();
+                ApplePreferences.with(getApplicationContext()).setAppleMusicUserToken(appleMusicUserToken);
+                Log.d("Apple Music", "User Token: " + appleMusicUserToken);
+            } else {
+                Log.e("Apple Music", "Error getting token: " + tokenResult.getError());
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
         if (response.getError() != null && !response.getError().isEmpty()) {
@@ -275,22 +286,22 @@ public class ServiceSelectorActivity extends AppCompatActivity {
     }
 
     // This method is used to handle the results from any activity that was called from this one.
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-        if (requestCode == REQUESTCODE_APPLEMUSIC_AUTH) {
-            TokenResult tokenResult = appleAuthenticationManager.handleTokenResult(data);
-
-            if (!tokenResult.isError()) {
-                String appleMusicUserToken = tokenResult.getMusicUserToken();
-                ApplePreferences.with(getApplicationContext()).setAppleMusicUserToken(appleMusicUserToken);
-                Log.d("Apple Music", "User Token: " + appleMusicUserToken);
-            } else {
-                Log.e("Apple Music", "Error getting token: " + tokenResult.getError());
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//
+//        if (requestCode == REQUESTCODE_APPLEMUSIC_AUTH) {
+//            TokenResult tokenResult = appleAuthenticationManager.handleTokenResult(data);
+//
+//            if (!tokenResult.isError()) {
+//                String appleMusicUserToken = tokenResult.getMusicUserToken();
+//                ApplePreferences.with(getApplicationContext()).setAppleMusicUserToken(appleMusicUserToken);
+//                Log.d("Apple Music", "User Token: " + appleMusicUserToken);
+//            } else {
+//                Log.e("Apple Music", "Error getting token: " + tokenResult.getError());
+//            }
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
+//    }
 
 }

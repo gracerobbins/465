@@ -95,22 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
         appleMusicPlaylistIds = new ArrayList<>();
 
-        playlist_names.add("Playlist Name 1");
-        playlist_names.add("Playlist Name 2");
-        playlist_names.add("Playlist Name 3");
-        playlist_names.add("Playlist Name 4");
-        playlist_names.add("Playlist Name 5");
-        playlist_names.add("Playlist Name 6");
-        playlist_names.add("Playlist Name 7");
-        playlist_names.add("Playlist Name 8");
-        playlist_names.add("Playlist Name 9");
-        playlist_names.add("Playlist Name 10");
-        playlist_names.add("Playlist Name 11");
-        playlist_names.add("Playlist Name 12");
-        playlist_names.add("Playlist Name 13");
-
         grid_view = (GridView) findViewById(R.id.playlist_selector);
-        ArrayAdapter<String> itemsAdapter =
+        itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
 
         grid_view.setAdapter(itemsAdapter);
@@ -316,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
                 .scheme(getString(R.string.com_spotify_sdk_redirect_scheme))
                 .authority(getString(R.string.com_spotify_sdk_redirect_host))
                 .build();
+    }
 
     private void setAppleMusicToSelector() {
         try {
