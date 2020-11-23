@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private Call mCall;
     private ArrayAdapter<String> itemsAdapter;
     public ArrayList<String> checked_playlists;
+    private int spotify_button_id;
+    private int apple_button_id;
 
     public ArrayList<String> checked_playlist_ids;
 
@@ -154,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final ImageButton swap_button = findViewById(R.id.swap_button);
+
         swap_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LinearLayout layout = findViewById(R.id.transfer_icon_list);
@@ -168,15 +171,14 @@ public class MainActivity extends AppCompatActivity {
                 layout.addView(arrow);
                 layout.addView(leftButton);
 
-                int leftButtonID = leftButton.getId();
-                if (leftButtonID == 2131231049) {
-                    Log.d("Apple Music", "Left button is apple music");
-                    setAppleMusicToSelector();
-                }
+                int leftButtonId = leftButton.getId();
+                updatePlaylistSelector(leftButtonId);
+
             }
         });
 
         final ImageButton spotify_button = findViewById(R.id.spotify_icon);
+        apple_button_id = spotify_button.getId();
         spotify_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final ImageButton apple_button = findViewById(R.id.apple_icon);
+        spotify_button_id = apple_button.getId();
         apple_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = new Bundle();
@@ -194,6 +197,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        updatePlaylistSelector(spotify_button_id);
     }
 
 
@@ -254,6 +259,10 @@ public class MainActivity extends AppCompatActivity {
                         final JSONObject jsonObject = new JSONObject((String) response);
                         Log.d("JSON Object", jsonObject.toString());
                         JSONArray items = jsonObject.getJSONArray("items");
+
+                        playlist_ids.clear();
+                        playlist_names.clear();
+
                         for (int i = 0; i < items.length(); i++) {
                             JSONObject p = items.getJSONObject(i);
                             playlist_names.add(p.getString("name"));
@@ -324,6 +333,16 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void updatePlaylistSelector(int leftButtonId) {
+        if (leftButtonId == apple_button_id) {
+            Log.d("Playlist Selector", "Left button is Apple Music; adding playlists");
+            setAppleMusicToSelector();
+        } else if (leftButtonId == spotify_button_id) {
+            Log.d("Playlist Selector", "Left button is Spotify; adding playlists.");
+            setSpotifyMusicToSelector();
+        }
     }
 
 }
