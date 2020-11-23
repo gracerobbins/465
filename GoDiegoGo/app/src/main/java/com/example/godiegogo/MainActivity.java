@@ -8,11 +8,14 @@ import android.net.Uri;
 import android.content.res.ColorStateList;
 
 import android.util.Log;
+import android.util.Patterns;
+import android.webkit.URLUtil;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.View;
 import android.graphics.Color;
 import android.content.Intent;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
@@ -45,6 +48,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -130,6 +135,31 @@ public class MainActivity extends AppCompatActivity {
         if (mAccessToken != null) {
 
         }
+
+        final EditText search_box = (EditText) findViewById(R.id.playlist_link);
+        final ImageButton search_enter = findViewById(R.id.url_enter_button);
+        search_enter.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String urlString = search_box.getText().toString().trim();
+                if (!urlString.startsWith("https://")) {
+                    urlString = "https://" + urlString;
+                }
+                try {
+                    URL url = new URL(urlString);
+                    if (URLUtil.isValidUrl(urlString) && Patterns.WEB_URL.matcher(urlString).matches()) {
+                        Bundle b = new Bundle();
+                        b.putString("url", urlString);
+                        b.putString("accessToken", mAccessToken);
+                        Intent intent = new Intent(v.getContext(), SearchConfirmActivity.class);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                    }
+                } catch (MalformedURLException ignored) {
+                    Log.d("MalformedURLException", "it hit this");
+                }
+            }
+        });
+
         final Button transfer_button = findViewById(R.id.transfer_button);
         transfer_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

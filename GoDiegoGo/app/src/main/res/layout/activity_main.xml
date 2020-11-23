@@ -18,16 +18,31 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"></Space>
-
-        <EditText
-            android:id="@+id/playlist_link"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Paste a playlist link here"
-            android:textColor="@color/black"
-            android:textSize="11pt"
-            android:layout_gravity="center_horizontal|top">
-        </EditText>
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/playlist_link"
+                android:layout_width="0dp"
+                android:layout_weight="6"
+                android:layout_height="wrap_content"
+                android:hint="Paste a playlist link here"
+                android:textColor="@color/black"
+                android:textSize="11pt"
+                android:layout_gravity="center_horizontal|top">
+            </EditText>
+            <ImageButton
+                android:id="@+id/url_enter_button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:src="@drawable/right_arrow"
+                android:scaleType="centerCrop"
+                android:backgroundTint="#00000000"
+                android:layout_gravity="center_vertical">
+            </ImageButton>
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/transfer_icon_list"
             android:layout_width="wrap_content"
