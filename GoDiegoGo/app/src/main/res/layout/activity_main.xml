@@ -4,28 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".LoadingPageActivity"
+    android:background="@color/ghost_white">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-<<<<<<< Updated upstream
     <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-=======
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingHorizontal="40dp">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"></Space>
+
         <EditText
             android:id="@+id/playlist_link"
             android:layout_width="wrap_content"
@@ -72,15 +65,10 @@
             android:scaleType="centerCrop"
             android:src="@drawable/swap"
             android:backgroundTint="#00000000"></ImageButton>
->>>>>>> Stashed changes
 
-        <Button xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/button_id"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-<<<<<<< Updated upstream
-            android:text="Button :)"></Button>
-=======
             android:text="Or select from your playlists:"
             android:textSize="11pt"
             android:textColor="@color/black"></TextView>
@@ -131,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"></Space>
->>>>>>> Stashed changes
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

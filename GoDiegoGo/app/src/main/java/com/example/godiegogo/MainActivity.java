@@ -1,69 +1,30 @@
 package com.example.godiegogo;
 
 import androidx.appcompat.app.AppCompatActivity;
-<<<<<<< Updated upstream
 import android.widget.Button;
 import android.view.View;
 import android.graphics.Color;
-
 import android.os.Bundle;
-
-public class MainActivity extends AppCompatActivity {
-
-=======
-
 import android.content.res.ColorStateList;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.view.View;
-import android.graphics.Color;
 import android.content.Intent;
 import android.widget.CheckedTextView;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.GridView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-
-import android.os.Bundle;
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
-
-//import com.spotify.sdk.android.auth.AuthenticationClient;
-//import com.spotify.sdk.android.auth.AuthenticationRequest;
-//import com.spotify.sdk.android.auth.AuthenticationResponse;
-//import com.spotify.sdk.android.player.Config;
-//import com.spotify.sdk.android.player.ConnectionStateCallback;
-//import com.spotify.sdk.android.player.Error;
-//import com.spotify.sdk.android.player.Player;
-//import com.spotify.sdk.android.player.PlayerEvent;
-//import com.spotify.sdk.android.player.Spotify;
-//import com.spotify.sdk.android.player.SpotifyPlayer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Locale;
 import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -72,7 +33,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     public ArrayList<String> playlist_names;
-//<<<<<<< HEAD
+
     public static final String CLIENT_ID = "17c1c4ef3eda4cd0afa1abe42019cac7";
     public static final String REDIRECT_URI = "GoDiegoGo-login://callback";
     public static final int AUTH_TOKEN_REQUEST_CODE = 0x10;
@@ -82,19 +43,16 @@ public class MainActivity extends AppCompatActivity {
     private String mAccessCode;
     private Call mCall;
     private ArrayAdapter<String> itemsAdapter;
-//=======
+
     public ArrayList<String> checked_playlists;
 
-//>>>>>>> 1b601ada58f12d7c61f9d08786db284a9628513c
->>>>>>> Stashed changes
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-<<<<<<< Updated upstream
 
-=======
-//<<<<<<< HEAD
         playlist_names = new ArrayList<String>();
         AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
         builder.setScopes(new String[]{"user-read-private", "streaming"});
@@ -105,20 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_names);
         GridView grid_view = (GridView) findViewById(R.id.playlist_selector);
         grid_view.setAdapter(itemsAdapter);
-//        playlist_names.add("Playlist Name 1");
-//        playlist_names.add("Playlist Name 2");
-//        playlist_names.add("Playlist Name 3");
-//        playlist_names.add("Playlist Name 4");
-
-//        ArrayAdapter<String> itemsAdapter =
-//                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_names);
-
-//=======
-//        checked_playlists = new ArrayList<String>();
-//        GridView grid_view = (GridView) findViewById(R.id.playlist_selector);
-//        ArrayAdapter<String> itemsAdapter =
-//                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
-//        grid_view.setAdapter(itemsAdapter);
         grid_view.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
@@ -177,23 +121,15 @@ public class MainActivity extends AppCompatActivity {
                 layout.addView(leftButton);
             }
         });
->>>>>>> Stashed changes
 
-        final Button button = findViewById(R.id.button_id);
-        button.setOnClickListener(new View.OnClickListener() {
+        final ImageButton spotify_button = findViewById(R.id.spotify_icon);
+        spotify_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-<<<<<<< Updated upstream
-                button.setBackgroundColor(Color.BLUE);
-            }
-        });
-    }
-=======
                 Bundle b = new Bundle();
                 Intent intent = new Intent(v.getContext(), ServiceSelectorActivity.class);
                 startActivity(intent);
             }
         });
-
 
         final ImageButton apple_button = findViewById(R.id.apple_icon);
         apple_button.setOnClickListener(new View.OnClickListener() {
@@ -292,19 +228,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
     private void cancelCall() {
         if (mCall != null) {
             mCall.cancel();
         }
     }
+
     private Uri getRedirectUri() {
         return new Uri.Builder()
                 .scheme(getString(R.string.com_spotify_sdk_redirect_scheme))
                 .authority(getString(R.string.com_spotify_sdk_redirect_host))
                 .build();
-//=======
-
-//>>>>>>> 1b601ada58f12d7c61f9d08786db284a9628513c
     }
->>>>>>> Stashed changes
+
 }
