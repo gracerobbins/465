@@ -1,95 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingHorizontal="40dp"
+    android:background="@color/ghost_white">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"></Space>
+
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select a Service:"
+        android:textColor="@color/black"
+        android:textSize="10pt"
+        android:layout_gravity="center_horizontal|top">
+    </TextView>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></Space>
+    <GridLayout
         android:id="@+id/select_Service"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select a Service"
-        android:textAllCaps='false'
-        android:textSize="40dp"
-        android:layout_marginTop="25dp"
-        android:gravity="center"
-        />
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/select_Service">
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:paddingHorizontal="10dp">
         <TextView
-            android:id="@+id/Spotify_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="150dp"
-            android:layout_marginLeft="25dp"
+            android:layout_row="0"
+            android:layout_column="0"
             android:text="Spotify"
-            android:textSize="23dp" />
-
+            android:textColor="@color/black"
+            android:layout_gravity="left"
+            android:textSize="8pt"></TextView>
         <Button
             android:id="@+id/Spotify_signin"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="300dp"
-            android:layout_marginTop="150dp"
-            android:text="Select"/>
-        <TextView
-            android:id="@+id/Apple_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="180dp"
-            android:layout_marginLeft="25dp"
-            android:text="Apple Music"
-            android:textSize="23dp" />
+            android:layout_row="0"
+            android:layout_column="1"
+            android:text="Select"
+            android:textSize="6pt"
+            android:layout_gravity="right">
+        </Button>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:text="Apple Music"
+            android:textColor="@color/black"
+            android:layout_gravity="left"
+            android:textSize="8pt"></TextView>
         <Button
             android:id="@+id/Apple_signin"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="300dp"
-            android:layout_marginTop="180dp"
-            android:text="Select" />
+            android:layout_width="wrap_content"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:text="Select"
+            android:textSize="6pt"
+            android:layout_gravity="right">
+        </Button>
         <TextView
-            android:id="@+id/Tidal_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="210dp"
-            android:layout_marginLeft="25dp"
+            android:layout_row="2"
+            android:layout_column="0"
             android:text="Tidal"
-            android:textSize="23dp" />
-
+            android:textColor="@color/black"
+            android:layout_gravity="left"
+            android:textSize="8pt"></TextView>
         <Button
             android:id="@+id/Tidal_signin"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="300dp"
-            android:layout_marginTop="210dp"
-            android:text="Select" />
+            android:layout_width="wrap_content"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:text="Log In"
+            android:textSize="6pt"
+            android:layout_gravity="right">
+        </Button>
         <TextView
-            android:id="@+id/Google_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="240dp"
-            android:layout_marginLeft="25dp"
+            android:layout_row="3"
+            android:layout_column="0"
             android:text="Google Play Music"
-            android:textSize="23dp" />
-
+            android:textColor="@color/black"
+            android:layout_gravity="left"
+            android:textSize="8pt"></TextView>
         <Button
             android:id="@+id/Google_signin"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="300dp"
-            android:layout_marginTop="240dp"
-            android:text="Select" />
-    </RelativeLayout>
-
-    <Button
+            android:layout_width="wrap_content"
+            android:layout_row="3"
+            android:layout_column="1"
+            android:text="Log In"
+            android:textSize="6pt"
+            android:layout_gravity="right">
+        </Button>
+    </GridLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"></Space>
+    <Button xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/finish_service_selection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="120dp"
-        android:layout_marginTop="450dp"
-        android:textSize="30dp"
-        android:text="Done" />
+        android:backgroundTint="@color/dark_spring_green"
+        android:text="Cancel"
+        android:layout_gravity="center_horizontal|bottom">
+    </Button>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"></Space>
 
-</RelativeLayout>
+</LinearLayout>

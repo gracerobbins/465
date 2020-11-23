@@ -49,14 +49,15 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal|top">
+
             <ImageButton
                 android:id="@+id/spotify_icon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/spotify_icon_small"
+                android:backgroundTint="#00000000"
                 android:scaleType="centerCrop"
-                android:backgroundTint="#00000000">
-            </ImageButton>
+                android:src="@drawable/spotify_icon_small"></ImageButton>
+
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"

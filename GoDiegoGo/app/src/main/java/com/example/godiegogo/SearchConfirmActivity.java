@@ -5,10 +5,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.godiegogo.preferences.SpotifyPreferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +53,9 @@ public class SearchConfirmActivity extends AppCompatActivity {
 
         Bundle b = this.getIntent().getExtras();
         url = b.getString("url");
-        accessToken = b.getString("accessToken");
+//        accessToken = b.getString("accessToken");
+        accessToken = SpotifyPreferences.with(getApplicationContext()).getUserToken();
+//        accessToken = "BQCliVter5F4y88OQzY8Ym5_GkUcQjDbumO80xH_h3OuLkFlhD_IFECdYMkpMe3enU-SsWEW_GtyB845Fuk8OnXWc5ub7cEmYjRYtPRPJIKBwLF_HzMnG9sCfveiSmqpJQIv0Osnv1oKTf3rADqUUSM0ch3CrrtpZNO9Rw9DeqVohwWsIixqBG53jyU";
         if (url.contains("spotify")) {
             // do spotify stuff
             playlistId = url.substring(url.lastIndexOf("/") + 1);
@@ -106,11 +112,17 @@ public class SearchConfirmActivity extends AppCompatActivity {
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
                         final JSONObject jsonObject = new JSONObject(response.body().string());
-
+                        Log.d("jsonObject", "it is here");
+                        Log.d("jsonObject String", jsonObject.toString());
                         JSONArray items = jsonObject.getJSONArray("items");
+                        Log.d("items", "it is here");
+                        System.out.println(items);
                         for (int i = 0; i < items.length(); i++) {
                             JSONObject p = items.getJSONObject(i).getJSONObject("track");
+                            Log.d("p", "it is here");
+                            System.out.println(p);
                             playlist_songs.add(p.getString("name"));
+                            Log.d("add", "it is here");
 //                            JSONObject extURL = items.getJSONObject(i).getJSONObject("external_urls");
 //                            playlist_url.add(extURL.getString("spotify"));
 
@@ -133,6 +145,7 @@ public class SearchConfirmActivity extends AppCompatActivity {
 
                     } catch (JSONException e) {
 //                        setResponse("Failed to parse data: " + e);
+                        Log.d("JSONException", "it hit this");
                     }
                 }
             });
