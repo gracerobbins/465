@@ -38,31 +38,38 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     public ArrayList<String> playlist_names;
+    public ArrayList<String> playlist_ids;
     public static final String CLIENT_ID = "17c1c4ef3eda4cd0afa1abe42019cac7";
     public static final String REDIRECT_URI = "GoDiegoGo-login://callback";
     public static final int AUTH_TOKEN_REQUEST_CODE = 0x10;
     public static final int AUTH_CODE_REQUEST_CODE = 0x11;
+    public static final int MAIN_ACTIVITY = 1;
+    public static final int SERVICE_SELECTOR_ACTIVITY = 2;
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private String mAccessToken;
     private String mAccessCode;
+    private String userId;
     private Call mCall;
     private ArrayAdapter<String> itemsAdapter;
     public ArrayList<String> checked_playlists;
+    public ArrayList<String> checked_playlist_ids;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        checked_playlists = new ArrayList<String>();
+        checked_playlist_ids = new ArrayList<String>();
         playlist_names = new ArrayList<String>();
-        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
-        builder.setScopes(new String[]{"user-read-private", "streaming"});
-        AuthorizationRequest request = builder.build();
-
-        AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request);
+        playlist_ids = new ArrayList<String>();
+//        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
+//        builder.setScopes(new String[]{"user-read-private", "streaming"});
+//        AuthorizationRequest request = builder.build();
+//
+//        AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request);
         itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_names);
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
 
         GridView grid_view = (GridView) findViewById(R.id.playlist_selector);
         grid_view.setAdapter(itemsAdapter);
@@ -77,18 +84,32 @@ public class MainActivity extends AppCompatActivity {
                 checkedTextView.setChecked(!checkedTextView.isChecked());
                 if (checkedTextView.isChecked() && !checked_playlists.contains(checkedTextView.getText().toString())) {
                     checked_playlists.add(checkedTextView.getText().toString());
+                    int i = playlist_names.indexOf(checkedTextView.getText().toString());
+                    checked_playlist_ids.add(playlist_ids.get(i));
+
                 } else {
+                    int i = playlist_names.indexOf(checkedTextView.getText().toString());
+                    checked_playlist_ids.remove(playlist_ids.get(i));
                     checked_playlists.remove(checkedTextView.getText().toString());
+
                 }
             }
         });
 
+        if (mAccessToken != null) {
+
+        }
         final Button transfer_button = findViewById(R.id.transfer_button);
         transfer_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putStringArrayList("checked_playlists", checked_playlists);
+                b.putStringArrayList("checked_playlist_ids", checked_playlist_ids);
+                Log.d("CheckedPlaylists", checked_playlists.toString());
+                Log.d("CheckedPlaylistIds", checked_playlist_ids.toString());
                 b.putString("transfer_type", "Transferring");
+                b.putString("mAccessToken", mAccessToken);
+                b.putString("userId", userId);
                 Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
                 intent.putExtras(b);
                 startActivity(intent);
@@ -130,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 Intent intent = new Intent(v.getContext(), ServiceSelectorActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, SERVICE_SELECTOR_ACTIVITY);
             }
         });
 
@@ -162,66 +183,78 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
-        Log.d("MyResponse", response.toString());
-        if (response.getError() != null && !response.getError().isEmpty()) {
-//            setResponse(response.getError());
-            Log.d("Error", "Response Error");
-        }
-        Log.d("MyAccessToken", response.getAccessToken());
-        Log.d("requestCode", String.valueOf(requestCode));
-        Log.d("resultCode", String.valueOf(resultCode));
-        Log.d("IntentData", data.toString());
-        if (requestCode == AUTH_TOKEN_REQUEST_CODE) {
-            mAccessToken = response.getAccessToken();
-            Log.d("MyActivity", mAccessToken);
-//            updateTokenView();
-        }
-        final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/users/" + "advai" + "/playlists")
-                .addHeader("Authorization","Bearer " + mAccessToken)
-                .build();
-
-        cancelCall();
-        mCall = mOkHttpClient.newCall(request);
-
-        mCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("Failure", "onFailureMethodCalled");
-//                setResponse("Failed to fetch data: " + e);
+        if (resultCode == RESULT_OK && requestCode == SERVICE_SELECTOR_ACTIVITY) {
+            if (data.hasExtra("userId")) {
+                userId = data.getStringExtra("userId");
             }
+            if (data.hasExtra("mAccessToken")) {
+                mAccessToken = data.getStringExtra("mAccessToken");
+            }
+        }
+//        Log.d("MyResponse", response.toString());
+//        if (response.getError() != null && !response.getError().isEmpty()) {
+////            setResponse(response.getError());
+//            Log.d("Error", "Response Error");
+//        }
+//        Log.d("MainMyAccessToken", response.getAccessToken());
+//        Log.d("MainrequestCode", String.valueOf(requestCode));
+//        Log.d("MainresultCode", String.valueOf(resultCode));
+//        Log.d("MainIntentData", data.toString());
+//        if (requestCode == AUTH_TOKEN_REQUEST_CODE) {
+//            mAccessToken = response.getAccessToken();
+//            Log.d("MainMyActivity", mAccessToken);
+////            updateTokenView();
+//        }
+        if (mAccessToken != null && userId != null) {
+            final Request request = new Request.Builder()
+                    .url("https://api.spotify.com/v1/users/" + userId + "/playlists")
+                    .addHeader("Authorization","Bearer " + mAccessToken)
+                    .build();
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    final JSONObject jsonObject = new JSONObject(response.body().string());
+            cancelCall();
+            mCall = mOkHttpClient.newCall(request);
 
-                    JSONArray items = jsonObject.getJSONArray("items");
-                    for (int i = 0; i < items.length(); i++) {
-                        JSONObject p = items.getJSONObject(i);
-                        playlist_names.add(p.getString("name"));
-                    }
+            mCall.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("Failure", "onFailureMethodCalled");
+//                setResponse("Failed to fetch data: " + e);
+                }
 
-                    Log.d("PlayListNames", playlist_names.toString());
-                    runOnUiThread(new Runnable() {
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try {
+                        final JSONObject jsonObject = new JSONObject(response.body().string());
 
-                        public void run() {
-                            itemsAdapter.notifyDataSetChanged();
-//                lv.invalidate();
+                        JSONArray items = jsonObject.getJSONArray("items");
+                        for (int i = 0; i < items.length(); i++) {
+                            JSONObject p = items.getJSONObject(i);
+                            playlist_names.add(p.getString("name"));
+                            playlist_ids.add(p.getString("id"));
                         }
-                    });
+
+                        Log.d("PlayListNames", playlist_names.toString());
+                        runOnUiThread(new Runnable() {
+
+                            public void run() {
+                                itemsAdapter.notifyDataSetChanged();
+//                lv.invalidate();
+                            }
+                        });
 //                    setResponse(jsonObject.toString(3));
 
 //                    setResponse(playlist_names);
 //                    user_id = jsonObject.getString("id");
 //                    Log.d("ForMe", user_id);
-                } catch (JSONException e) {
+                    } catch (JSONException e) {
 //                    setResponse("Failed to parse data: " + e);
+                    }
                 }
-            }
-        });
+            });
 
-        Log.d("Got here", "got here");
+            Log.d("MainGot here", "got here");
+        }
+
     }
 
     private void cancelCall() {
@@ -236,4 +269,5 @@ public class MainActivity extends AppCompatActivity {
                 .authority(getString(R.string.com_spotify_sdk_redirect_host))
                 .build();
     }
+
 }
