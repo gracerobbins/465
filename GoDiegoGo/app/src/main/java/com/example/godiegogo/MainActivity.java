@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton search_enter = findViewById(R.id.url_enter_button);
         search_enter.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String urlString = search_box.getText().toString();
+                String urlString = search_box.getText().toString().trim();
                 if (!urlString.startsWith("https://")) {
                     urlString = "https://" + urlString;
                 }

@@ -55,10 +55,10 @@ public class SearchConfirmActivity extends AppCompatActivity {
                     .url("https://api.spotify.com/v1/playlists/" + playlistId + "/tracks?limit=10")
                     .addHeader("Authorization","Bearer " + accessToken)
                     .build();
-            final Request request_name = new Request.Builder()
-                    .url("https://api.spotify.com/v1/playlists/" + playlistId)
-                    .addHeader("Authorization","Bearer " + accessToken)
-                    .build();
+//            final Request request_name = new Request.Builder()
+//                    .url("https://api.spotify.com/v1/playlists/" + playlistId)
+//                    .addHeader("Authorization","Bearer " + accessToken)
+//                    .build();
 
             cancelCall();
             mCall = mOkHttpClient.newCall(request);
