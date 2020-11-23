@@ -19,6 +19,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import android.os.Bundle;
+
+import com.example.godiegogo.utils.SpotifyMusicUtils;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -91,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
         appleMusicPlaylistIds = new ArrayList<>();
 
         grid_view = (GridView) findViewById(R.id.playlist_selector);
-        itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
+//        itemsAdapter =
+//                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
 
         grid_view.setAdapter(itemsAdapter);
         grid_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -290,7 +292,46 @@ public class MainActivity extends AppCompatActivity {
                 .authority(getString(R.string.com_spotify_sdk_redirect_host))
                 .build();
     }
+    private void setSpotifyMusicToSelector() {
+        try {
+            SpotifyMusicUtils.getSpotifyMusicPlaylists(getApplicationContext(), new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                    Log.e("Spotify Music", message);
+                }
 
+                @Override
+                public void onResponse(Object response) {
+                    try {
+                        final JSONObject jsonObject = new JSONObject((String) response);
+
+                        JSONArray items = jsonObject.getJSONArray("items");
+                        for (int i = 0; i < items.length(); i++) {
+                            JSONObject p = items.getJSONObject(i);
+                            playlist_names.add(p.getString("name"));
+                            playlist_ids.add(p.getString("id"));
+                        }
+
+                        Log.d("PlayListNames", playlist_names.toString());
+                        runOnUiThread(new Runnable() {
+
+                            public void run() {
+                                itemsAdapter.notifyDataSetChanged();
+
+                            }
+                        });
+
+
+
+                    } catch (JSONException e) {
+
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void setAppleMusicToSelector() {
         try {
             AppleMusicUtils.getAppleMusicPlaylists(getApplicationContext(), new VolleyResponseListener() {
@@ -318,10 +359,16 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                         }
+                        runOnUiThread(new Runnable() {
 
-                        ArrayAdapter<String> itemsAdapter =
-                                new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_multiple_choice, playlist_names);
-                        grid_view.setAdapter(itemsAdapter);
+                            public void run() {
+                                itemsAdapter.notifyDataSetChanged();
+
+                            }
+                        });
+//                        ArrayAdapter<String> itemsAdapter =
+//                                new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_multiple_choice, playlist_names);
+//                        grid_view.setAdapter(itemsAdapter);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
