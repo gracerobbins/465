@@ -2,7 +2,11 @@ package com.example.godiegogo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import android.net.Uri;
+
+import android.content.res.ColorStateList;
+
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,7 +31,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import java.io.IOException;
+
+import com.example.godiegogo.utils.AppleMusicUtils;
+import com.example.godiegogo.utils.VolleyResponseListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
 import java.util.ArrayList;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -52,7 +66,12 @@ public class MainActivity extends AppCompatActivity {
     private Call mCall;
     private ArrayAdapter<String> itemsAdapter;
     public ArrayList<String> checked_playlists;
+
     public ArrayList<String> checked_playlist_ids;
+
+
+    public ArrayList<String> appleMusicPlaylistIds;
+    private GridView grid_view;
 
 
     @Override
@@ -62,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         checked_playlists = new ArrayList<String>();
         checked_playlist_ids = new ArrayList<String>();
         playlist_names = new ArrayList<String>();
+
         playlist_ids = new ArrayList<String>();
 //        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
 //        builder.setScopes(new String[]{"user-read-private", "streaming"});
@@ -72,6 +92,27 @@ public class MainActivity extends AppCompatActivity {
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
 
         GridView grid_view = (GridView) findViewById(R.id.playlist_selector);
+
+        appleMusicPlaylistIds = new ArrayList<>();
+
+        playlist_names.add("Playlist Name 1");
+        playlist_names.add("Playlist Name 2");
+        playlist_names.add("Playlist Name 3");
+        playlist_names.add("Playlist Name 4");
+        playlist_names.add("Playlist Name 5");
+        playlist_names.add("Playlist Name 6");
+        playlist_names.add("Playlist Name 7");
+        playlist_names.add("Playlist Name 8");
+        playlist_names.add("Playlist Name 9");
+        playlist_names.add("Playlist Name 10");
+        playlist_names.add("Playlist Name 11");
+        playlist_names.add("Playlist Name 12");
+        playlist_names.add("Playlist Name 13");
+
+        grid_view = (GridView) findViewById(R.id.playlist_selector);
+        ArrayAdapter<String> itemsAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
+
         grid_view.setAdapter(itemsAdapter);
         grid_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -142,6 +183,12 @@ public class MainActivity extends AppCompatActivity {
                 layout.addView(rightButton);
                 layout.addView(arrow);
                 layout.addView(leftButton);
+
+                int leftButtonID = leftButton.getId();
+                if (leftButtonID == 2131231049) {
+                    Log.d("Apple Music", "Left button is apple music");
+                    setAppleMusicToSelector();
+                }
             }
         });
 
@@ -164,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
     public void onRequestCodeClicked(View view) {
@@ -268,6 +316,49 @@ public class MainActivity extends AppCompatActivity {
                 .scheme(getString(R.string.com_spotify_sdk_redirect_scheme))
                 .authority(getString(R.string.com_spotify_sdk_redirect_host))
                 .build();
+
+    private void setAppleMusicToSelector() {
+        try {
+            AppleMusicUtils.getAppleMusicPlaylists(getApplicationContext(), new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                    Log.e("Apple Music", message);
+                }
+
+                @Override
+                public void onResponse(Object response) {
+                    try {
+                        Log.d("Apple Music", "We got response");
+                        JSONObject jsonObject = new JSONObject((String) response);
+                        JSONArray playlists = jsonObject.getJSONArray("data");
+
+                        playlist_names.clear();
+                        appleMusicPlaylistIds.clear();
+
+                        for (int i = 0; i < playlists.length(); i++) {
+                            JSONObject playlist = playlists.getJSONObject(i);
+                            JSONObject attributes = playlist.getJSONObject("attributes");
+                            if (attributes.getBoolean("canEdit")) {
+                                playlist_names.add(attributes.getString("name"));
+                                appleMusicPlaylistIds.add(playlist.getString("id"));
+                            }
+
+                        }
+
+                        ArrayAdapter<String> itemsAdapter =
+                                new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_multiple_choice, playlist_names);
+                        grid_view.setAdapter(itemsAdapter);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

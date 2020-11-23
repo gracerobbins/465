@@ -3,6 +3,7 @@ package com.example.godiegogo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +31,7 @@ import android.widget.CheckedTextView;
 import android.widget.GridView;
 import android.widget.AdapterView;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,11 +43,23 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+
+import com.apple.android.sdk.authentication.AuthenticationFactory;
+import com.apple.android.sdk.authentication.AuthenticationManager;
+import com.apple.android.sdk.authentication.TokenResult;
+import com.example.godiegogo.preferences.AppleAuthenticator;
+import com.example.godiegogo.preferences.ApplePreferences;
+
+import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.lang.annotation.Native;
 import java.util.ArrayList;
 
 public class ServiceSelectorActivity extends AppCompatActivity {
+
 
     public static final String CLIENT_ID = "17c1c4ef3eda4cd0afa1abe42019cac7";
     public static final String REDIRECT_URI = "GoDiegoGo-login://callback";
@@ -55,6 +69,10 @@ public class ServiceSelectorActivity extends AppCompatActivity {
     private String userId;
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private Call mCall;
+
+    private AuthenticationManager appleAuthenticationManager;
+    private static final int REQUESTCODE_APPLEMUSIC_AUTH = 3456;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,19 +101,22 @@ public class ServiceSelectorActivity extends AppCompatActivity {
             // handle SELECT function to return service back to main menu
         }
         //Apple Music
-        String appleToken = null;
-//        spotifyToken = AppPreferences.with(getApplicationContext().getUserToken());
+
+        String appleToken = ApplePreferences.with(getApplicationContext()).getUserToken();
         if (appleToken == null || appleToken.isEmpty()) {
             Button button = findViewById(R.id.Apple_signin);
             button.setText("Sign In");
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Bundle b = new Bundle();
-                    b.putString("service", "Apple");
-                    Intent intent = new Intent(v.getContext(), LoginPromptActivity.class);
-                    intent.putExtras(b);
-                    startActivity(intent);
-                    finish();
+                   if (appleAuthenticationManager == null) {
+                       appleAuthenticationManager = AuthenticationFactory.createAuthenticationManager(getApplicationContext());
+                   }
+                   Intent intent = appleAuthenticationManager.createIntentBuilder(getString(R.string.jwt_token))
+                           .setHideStartScreen(false)
+                           .setStartScreenMessage("Please log in to access your library")
+                           .build();
+                   startActivityForResult(intent, REQUESTCODE_APPLEMUSIC_AUTH);
+
                 }
             });
         } else {
@@ -118,6 +139,7 @@ public class ServiceSelectorActivity extends AppCompatActivity {
                 }
             });
         } else {
+            Log.d("Apple Music", "Already Signed in");
             // handle SELECT function to return service back to main menu
         }
         //Google Play
@@ -148,6 +170,7 @@ public class ServiceSelectorActivity extends AppCompatActivity {
         });
 
     }
+
 
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
@@ -250,4 +273,24 @@ public class ServiceSelectorActivity extends AppCompatActivity {
                 .authority(getString(R.string.com_spotify_sdk_redirect_host))
                 .build();
     }
+
+    // This method is used to handle the results from any activity that was called from this one.
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if (requestCode == REQUESTCODE_APPLEMUSIC_AUTH) {
+            TokenResult tokenResult = appleAuthenticationManager.handleTokenResult(data);
+
+            if (!tokenResult.isError()) {
+                String appleMusicUserToken = tokenResult.getMusicUserToken();
+                ApplePreferences.with(getApplicationContext()).setAppleMusicUserToken(appleMusicUserToken);
+                Log.d("Apple Music", "User Token: " + appleMusicUserToken);
+            } else {
+                Log.e("Apple Music", "Error getting token: " + tokenResult.getError());
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 }

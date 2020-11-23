@@ -10,7 +10,6 @@ public class ApplePreferences implements com.apple.android.sdk.authentication.To
     private final Context context;
     private SharedPreferences preferences;
     private static volatile ApplePreferences instance;
-
     private static final String KEY_APPLE_MUSIC_USER_TOKEN = "apple-music-user-token";
 
     public static ApplePreferences with(Context context) {
