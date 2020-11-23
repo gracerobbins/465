@@ -23,6 +23,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import android.os.Bundle;
+
+import com.example.godiegogo.preferences.SpotifyPreferences;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -80,8 +82,8 @@ public class ServiceSelectorActivity extends AppCompatActivity {
         setContentView(R.layout.service_selector);
 
         //Spotify
-        String spotifyToken = "";
-//        spotifyToken = AppPreferences.with(getApplicationContext().getUserToken());
+//        String spotifyToken = "";
+        String spotifyToken = SpotifyPreferences.with(getApplicationContext()).getUserToken();
         if (spotifyToken == null || spotifyToken.isEmpty()) {
             Button button = findViewById(R.id.Spotify_signin);
             button.setText("Sign In");
@@ -98,6 +100,7 @@ public class ServiceSelectorActivity extends AppCompatActivity {
                 }
             });
         } else {
+            Log.d("Token Persisted", spotifyToken);
             // handle SELECT function to return service back to main menu
         }
         //Apple Music

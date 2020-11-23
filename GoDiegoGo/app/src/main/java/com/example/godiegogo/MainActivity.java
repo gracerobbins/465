@@ -20,6 +20,7 @@ import android.widget.ImageView;
 
 import android.os.Bundle;
 
+import com.example.godiegogo.preferences.SpotifyPreferences;
 import com.example.godiegogo.utils.SpotifyMusicUtils;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
@@ -217,9 +218,11 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == SERVICE_SELECTOR_ACTIVITY) {
             if (data.hasExtra("userId")) {
                 userId = data.getStringExtra("userId");
+                SpotifyPreferences.with(getApplicationContext()).setSpotifyUserId(userId);
             }
             if (data.hasExtra("mAccessToken")) {
                 mAccessToken = data.getStringExtra("mAccessToken");
+                SpotifyPreferences.with(getApplicationContext()).setSpotifyUserToken(mAccessToken);
             }
             if (mAccessToken != null && userId != null) {
                 final Request request = new Request.Builder()
@@ -304,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Object response) {
                     try {
                         final JSONObject jsonObject = new JSONObject((String) response);
-
+                        Log.d("JSON Object", jsonObject.toString());
                         JSONArray items = jsonObject.getJSONArray("items");
                         for (int i = 0; i < items.length(); i++) {
                             JSONObject p = items.getJSONObject(i);
