@@ -23,7 +23,7 @@
             android:id="@+id/transfer_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Playlist Straight Vibes was found on Spotify. Choose which service you'd like to transfer it to:"
+            android:text="Playlist _________ was found on Spotify. Choose which service you'd like to transfer it to:"
             android:textColor="@color/black"
             android:textSize="10pt"
             android:layout_gravity="center_horizontal|top">
