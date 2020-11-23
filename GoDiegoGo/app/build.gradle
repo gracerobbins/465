@@ -38,4 +38,8 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.spotify.android:auth:1.2.3' // Maven dependency
+//    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.3'
 }

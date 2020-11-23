@@ -2,4 +2,6 @@
     <string name="app_name">GoDiegoGo</string>
     <string name="preferences_file_name">app_preferences</string>
     <string name="jwt_token">eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IldXWkwzUTJGTjkifQ.eyJpc3MiOiIzWjlYSDJCN1Y0IiwiZXhwIjoxNjA2MDcxODQ1LCJpYXQiOjE2MDYwMjg2NDV9.xSHcCQVOwcoEd7Ffz42hOmOJ3cxLJz1N4CeWaJtlKtH1OU9SNczppfkR3g7lw8eSJyA1m1j6BM8jXhCkl827KA</string>
+    <string name="com_spotify_sdk_redirect_scheme">GoDiegoGo-login</string>
+    <string name="com_spotify_sdk_redirect_host">callback</string>
 </resources>
