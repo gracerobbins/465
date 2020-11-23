@@ -68,7 +68,6 @@ public class LoadingPageActivity extends AppCompatActivity {
         final Button button = findViewById(R.id.cancel_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                button.setBackgroundColor(Color.BLUE);
                 finish();
             }
         });

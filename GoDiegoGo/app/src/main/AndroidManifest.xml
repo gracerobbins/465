@@ -25,6 +25,12 @@
         <activity android:name=".LoadingPageResultsActivity"
             android:parentActivityName=".LoadingPageActivity">
         </activity>
+<!--        <activity android:name=".SearchConfirmActivity"-->
+<!--            android:parentActivityName=".MainActivity">-->
+<!--        </activity>-->
+        <activity android:name=".ServiceSelectorActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
     </application>
 
 </manifest>

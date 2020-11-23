@@ -3,16 +3,12 @@ package com.example.godiegogo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.ColorStateList;
-import android.graphics.BlendMode;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.View;
 import android.graphics.Color;
 import android.content.Intent;
 import android.widget.CheckedTextView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -22,7 +18,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import android.os.Bundle;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -110,6 +105,25 @@ public class MainActivity extends AppCompatActivity {
                 layout.addView(rightButton);
                 layout.addView(arrow);
                 layout.addView(leftButton);
+            }
+        });
+
+        final ImageButton spotify_button = findViewById(R.id.spotify_icon);
+        spotify_button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Bundle b = new Bundle();
+                Intent intent = new Intent(v.getContext(), ServiceSelectorActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        final ImageButton apple_button = findViewById(R.id.apple_icon);
+        apple_button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Bundle b = new Bundle();
+                Intent intent = new Intent(v.getContext(), ServiceSelectorActivity.class);
+                startActivity(intent);
             }
         });
     }
