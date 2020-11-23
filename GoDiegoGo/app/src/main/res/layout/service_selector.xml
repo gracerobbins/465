@@ -50,6 +50,7 @@
             android:textSize="6pt"
             android:layout_gravity="right">
         </Button>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

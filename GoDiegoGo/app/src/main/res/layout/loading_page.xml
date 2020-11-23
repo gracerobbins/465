@@ -71,14 +71,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"></Space>
+
         <ListView
             android:id="@+id/songlist"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="12"
             android:background="@color/white"
-            android:elevation="4dp">
-        </ListView>
+            android:elevation="4dp"></ListView>
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
