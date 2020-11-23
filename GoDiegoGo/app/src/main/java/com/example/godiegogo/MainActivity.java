@@ -3,6 +3,7 @@ package com.example.godiegogo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.View;
@@ -18,11 +19,19 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import android.os.Bundle;
 
+import com.example.godiegogo.utils.AppleMusicUtils;
+import com.example.godiegogo.utils.VolleyResponseListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     public ArrayList<String> playlist_names;
     public ArrayList<String> checked_playlists;
+    private GridView grid_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         playlist_names.add("Playlist Name 12");
         playlist_names.add("Playlist Name 13");
 
-        GridView grid_view = (GridView) findViewById(R.id.playlist_selector);
+        grid_view = (GridView) findViewById(R.id.playlist_selector);
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
         grid_view.setAdapter(itemsAdapter);
@@ -105,6 +114,12 @@ public class MainActivity extends AppCompatActivity {
                 layout.addView(rightButton);
                 layout.addView(arrow);
                 layout.addView(leftButton);
+
+                int leftButtonID = leftButton.getId();
+                if (leftButtonID == 2131231049) {
+                    Log.d("Apple Music", "leftbuttonis apple music");
+                    setAppleMusicToSelector();
+                }
             }
         });
 
@@ -127,4 +142,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void setAppleMusicToSelector() {
+        try {
+            AppleMusicUtils.getAppleMusicPlaylists(getApplicationContext(), new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                    Log.e("Apple Music", message);
+                }
+
+                @Override
+                public void onResponse(Object response) {
+                    try {
+                        Log.d("Apple Music", "We got response");
+                        JSONObject jsonObject = new JSONObject((String) response);
+                        JSONArray playlists = jsonObject.getJSONArray("data");
+
+                        playlist_names.clear();
+
+                        for (int i = 0; i < playlists.length(); i++) {
+                            JSONObject playlist = playlists.getJSONObject(i);
+                            JSONObject attributes = playlist.getJSONObject("attributes");
+                            playlist_names.add(attributes.getString("name"));
+                        }
+
+                        ArrayAdapter<String> itemsAdapter =
+                                new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_multiple_choice, playlist_names);
+                        grid_view.setAdapter(itemsAdapter);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
