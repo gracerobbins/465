@@ -194,77 +194,51 @@ public class ServiceSelectorActivity extends AppCompatActivity {
             } else {
                 Log.e("Apple Music", "Error getting token: " + tokenResult.getError());
             }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-        final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
-        if (response.getError() != null && !response.getError().isEmpty()) {
-//            setResponse(response.getError());
-            Log.d("Error", "Response Error");
-        }
-        Log.d("SSMyAccessToken", response.getAccessToken());
-        Log.d("SSrequestCode", String.valueOf(requestCode));
-        Log.d("SSresultCode", String.valueOf(resultCode));
-        Log.d("SSIntentData", data.toString());
-        if (requestCode == AUTH_TOKEN_REQUEST_CODE) {
+        } else if (requestCode == AUTH_TOKEN_REQUEST_CODE) {
+            final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
+            if (response.getError() != null && !response.getError().isEmpty()) {
+                Log.d("Error", "Response Error");
+            }
+            Log.d("SSMyAccessToken", response.getAccessToken());
+            Log.d("SSrequestCode", String.valueOf(requestCode));
+            Log.d("SSresultCode", String.valueOf(resultCode));
+            Log.d("SSIntentData", data.toString());
             mAccessToken = response.getAccessToken();
             Log.d("MyActivity", mAccessToken);
-//            updateTokenView();
-        }
-        final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/")
-                .addHeader("Authorization","Bearer " + mAccessToken)
-                .build();
+            final Request request = new Request.Builder()
+                    .url("https://api.spotify.com/v1/me/")
+                    .addHeader("Authorization","Bearer " + mAccessToken)
+                    .build();
 
-        cancelCall();
-        mCall = mOkHttpClient.newCall(request);
+            cancelCall();
+            mCall = mOkHttpClient.newCall(request);
 
-        mCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("Failure", "onFailureMethodCalled");
-//                setResponse("Failed to fetch data: " + e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    final JSONObject jsonObject = new JSONObject(response.body().string());
-                    userId = jsonObject.getString("id");
-                    Log.d("userId", userId);
-
-                    Intent intent = new Intent();
-                    intent.putExtra("userId", userId);
-                    intent.putExtra("mAccessToken", mAccessToken);
-                    setResult(RESULT_OK, intent);
-                    finish();
-//                    JSONArray items = jsonObject.getJSONArray("items");
-//                    for (int i = 0; i < items.length(); i++) {
-//                        JSONObject p = items.getJSONObject(i);
-//                        playlist_names.add(p.getString("name"));
-//                    }
-
-//                    Log.d("PlayListNames", playlist_names.toString());
-
-//                    runOnUiThread(new Runnable() {
-//
-//                        public void run() {
-//                            itemsAdapter.notifyDataSetChanged();
-////                lv.invalidate();
-//                        }
-//                    });
-//                    setResponse(jsonObject.toString(3));
-
-//                    setResponse(playlist_names);
-//                    user_id = jsonObject.getString("id");
-//                    Log.d("ForMe", user_id);
-                } catch (JSONException e) {
-                    Log.d("Error", "Exception");
-//                    setResponse("Failed to parse data: " + e);
+            mCall.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("Failure", "onFailureMethodCalled");
                 }
-            }
-        });
 
-        Log.d("Got here", "got here");
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try {
+                        final JSONObject jsonObject = new JSONObject(response.body().string());
+                        userId = jsonObject.getString("id");
+                        Log.d("userId", userId);
+
+                        Intent intent = new Intent();
+                        intent.putExtra("userId", userId);
+                        intent.putExtra("mAccessToken", mAccessToken);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    } catch (JSONException e) {
+                        Log.d("Error", "Exception");
+                    }
+                }
+            });
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void cancelCall() {

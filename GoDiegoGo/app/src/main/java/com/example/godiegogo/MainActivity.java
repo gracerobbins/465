@@ -83,11 +83,6 @@ public class MainActivity extends AppCompatActivity {
         playlist_names = new ArrayList<String>();
 
         playlist_ids = new ArrayList<String>();
-//        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
-//        builder.setScopes(new String[]{"user-read-private", "streaming"});
-//        AuthorizationRequest request = builder.build();
-//
-//        AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request);
         itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
 
@@ -224,12 +219,52 @@ public class MainActivity extends AppCompatActivity {
             if (data.hasExtra("mAccessToken")) {
                 mAccessToken = data.getStringExtra("mAccessToken");
             }
+            if (mAccessToken != null && userId != null) {
+                final Request request = new Request.Builder()
+                        .url("https://api.spotify.com/v1/users/" + userId + "/playlists")
+                        .addHeader("Authorization","Bearer " + mAccessToken)
+                        .build();
+
+                cancelCall();
+                mCall = mOkHttpClient.newCall(request);
+
+                mCall.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.d("Failure", "onFailureMethodCalled");
+//                setResponse("Failed to fetch data: " + e);
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        try {
+                            final JSONObject jsonObject = new JSONObject(response.body().string());
+
+                            JSONArray items = jsonObject.getJSONArray("items");
+                            for (int i = 0; i < items.length(); i++) {
+                                JSONObject p = items.getJSONObject(i);
+                                playlist_names.add(p.getString("name"));
+                                playlist_ids.add(p.getString("id"));
+                            }
+
+                            Log.d("PlayListNames", playlist_names.toString());
+                            runOnUiThread(new Runnable() {
+
+                                public void run() {
+                                    itemsAdapter.notifyDataSetChanged();
+
+                                }
+                            });
+
+
+
+                        } catch (JSONException e) {
+
+                        }
+                    }
+                });
         }
-//        Log.d("MyResponse", response.toString());
-//        if (response.getError() != null && !response.getError().isEmpty()) {
-////            setResponse(response.getError());
-//            Log.d("Error", "Response Error");
-//        }
+
 //        Log.d("MainMyAccessToken", response.getAccessToken());
 //        Log.d("MainrequestCode", String.valueOf(requestCode));
 //        Log.d("MainresultCode", String.valueOf(resultCode));
@@ -239,54 +274,6 @@ public class MainActivity extends AppCompatActivity {
 //            Log.d("MainMyActivity", mAccessToken);
 ////            updateTokenView();
 //        }
-        if (mAccessToken != null && userId != null) {
-            final Request request = new Request.Builder()
-                    .url("https://api.spotify.com/v1/users/" + userId + "/playlists")
-                    .addHeader("Authorization","Bearer " + mAccessToken)
-                    .build();
-
-            cancelCall();
-            mCall = mOkHttpClient.newCall(request);
-
-            mCall.enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.d("Failure", "onFailureMethodCalled");
-//                setResponse("Failed to fetch data: " + e);
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    try {
-                        final JSONObject jsonObject = new JSONObject(response.body().string());
-
-                        JSONArray items = jsonObject.getJSONArray("items");
-                        for (int i = 0; i < items.length(); i++) {
-                            JSONObject p = items.getJSONObject(i);
-                            playlist_names.add(p.getString("name"));
-                            playlist_ids.add(p.getString("id"));
-                        }
-
-                        Log.d("PlayListNames", playlist_names.toString());
-                        runOnUiThread(new Runnable() {
-
-                            public void run() {
-                                itemsAdapter.notifyDataSetChanged();
-//                lv.invalidate();
-                            }
-                        });
-//                    setResponse(jsonObject.toString(3));
-
-//                    setResponse(playlist_names);
-//                    user_id = jsonObject.getString("id");
-//                    Log.d("ForMe", user_id);
-                    } catch (JSONException e) {
-//                    setResponse("Failed to parse data: " + e);
-                    }
-                }
-            });
-
-            Log.d("MainGot here", "got here");
         }
 
     }
