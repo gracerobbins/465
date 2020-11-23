@@ -54,8 +54,8 @@ import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-    public ArrayList<String> playlist_names;
-    public ArrayList<String> playlist_ids;
+    public ArrayList<String> playlistNames;
+    public ArrayList<String> playlistIds;
     public static final String CLIENT_ID = "17c1c4ef3eda4cd0afa1abe42019cac7";
     public static final String REDIRECT_URI = "GoDiegoGo-login://callback";
     public static final int AUTH_TOKEN_REQUEST_CODE = 0x10;
@@ -75,8 +75,14 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<String> checked_playlist_ids;
 
 
-    public ArrayList<String> appleMusicPlaylistIds;
     private GridView grid_view;
+
+    public enum Service {
+        APPLE_MUSIC,
+        SPOTIFY,
+        TIDAL,
+        GOOGLE_PLAY
+    }
 
 
     @Override
@@ -85,19 +91,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checked_playlists = new ArrayList<String>();
         checked_playlist_ids = new ArrayList<String>();
-        playlist_names = new ArrayList<String>();
+        playlistNames = new ArrayList<String>();
 
-        playlist_ids = new ArrayList<String>();
+        playlistIds = new ArrayList<String>();
         itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlistNames);
 
-        GridView grid_view = (GridView) findViewById(R.id.playlist_selector);
+        // Temporary Measure until we figure out requesting refresh keys
+        SpotifyPreferences.with(getApplicationContext()).setSpotifyUserToken(null);
 
-        appleMusicPlaylistIds = new ArrayList<>();
 
         grid_view = (GridView) findViewById(R.id.playlist_selector);
-//        itemsAdapter =
-//                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlist_names);
 
         grid_view.setAdapter(itemsAdapter);
         grid_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -111,12 +115,12 @@ public class MainActivity extends AppCompatActivity {
                 checkedTextView.setChecked(!checkedTextView.isChecked());
                 if (checkedTextView.isChecked() && !checked_playlists.contains(checkedTextView.getText().toString())) {
                     checked_playlists.add(checkedTextView.getText().toString());
-                    int i = playlist_names.indexOf(checkedTextView.getText().toString());
-                    checked_playlist_ids.add(playlist_ids.get(i));
+                    int i = playlistNames.indexOf(checkedTextView.getText().toString());
+                    checked_playlist_ids.add(playlistIds.get(i));
 
                 } else {
-                    int i = playlist_names.indexOf(checkedTextView.getText().toString());
-                    checked_playlist_ids.remove(playlist_ids.get(i));
+                    int i = playlistNames.indexOf(checkedTextView.getText().toString());
+                    checked_playlist_ids.remove(playlistIds.get(i));
                     checked_playlists.remove(checkedTextView.getText().toString());
 
                 }
@@ -130,13 +134,27 @@ public class MainActivity extends AppCompatActivity {
         transfer_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = new Bundle();
+                LinearLayout layout = findViewById(R.id.transfer_icon_list);
+                ImageButton leftButton = (ImageButton)layout.getChildAt(0);
+
                 b.putStringArrayList("checked_playlists", checked_playlists);
                 b.putStringArrayList("checked_playlist_ids", checked_playlist_ids);
-                Log.d("CheckedPlaylists", checked_playlists.toString());
-                Log.d("CheckedPlaylistIds", checked_playlist_ids.toString());
-                b.putString("transfer_type", "Transferring");
-                b.putString("mAccessToken", mAccessToken);
-                b.putString("userId", userId);
+                Log.d("Transfer", "CheckedPlaylists: " + checked_playlists.toString());
+                Log.d("Transfer", "CheckedPlaylistIds: " + checked_playlist_ids.toString());
+
+                if (leftButton.getId() == spotify_button_id) {
+                    Log.d("Transfer", "Transferring Spotify Playlists");
+                    b.putString("transfer_type", "Transferring");
+                    b.putString("mAccessToken", mAccessToken);
+                    b.putString("userId", userId);
+                    b.putSerializable("transferFrom", Service.SPOTIFY);
+                    b.putSerializable("transferTo", Service.APPLE_MUSIC);
+                } else if (leftButton.getId() == apple_button_id) {
+                    Log.d("Transfer", "Transferring Apple Music Playlists");
+                    b.putSerializable("transferFrom", Service.APPLE_MUSIC);
+                    b.putSerializable("transferTo", Service.SPOTIFY);
+                }
+
                 Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
                 intent.putExtras(b);
                 startActivity(intent);
@@ -171,14 +189,14 @@ public class MainActivity extends AppCompatActivity {
                 layout.addView(arrow);
                 layout.addView(leftButton);
 
-                int leftButtonId = leftButton.getId();
+                int leftButtonId = rightButton.getId();
                 updatePlaylistSelector(leftButtonId);
 
             }
         });
 
         final ImageButton spotify_button = findViewById(R.id.spotify_icon);
-        apple_button_id = spotify_button.getId();
+        spotify_button_id = spotify_button.getId();
         spotify_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final ImageButton apple_button = findViewById(R.id.apple_icon);
-        spotify_button_id = apple_button.getId();
+        apple_button_id = apple_button.getId();
         apple_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = new Bundle();
@@ -231,6 +249,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        LinearLayout layout = findViewById(R.id.transfer_icon_list);
+        ImageButton leftButton = (ImageButton)layout.getChildAt(0);
+        updatePlaylistSelector(leftButton.getId());
+
+
     }
 
     private void cancelCall() {
@@ -260,16 +283,16 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("JSON Object", jsonObject.toString());
                         JSONArray items = jsonObject.getJSONArray("items");
 
-                        playlist_ids.clear();
-                        playlist_names.clear();
+                        playlistIds.clear();
+                        playlistNames.clear();
 
                         for (int i = 0; i < items.length(); i++) {
                             JSONObject p = items.getJSONObject(i);
-                            playlist_names.add(p.getString("name"));
-                            playlist_ids.add(p.getString("id"));
+                            playlistNames.add(p.getString("name"));
+                            playlistIds.add(p.getString("id"));
                         }
 
-                        Log.d("PlayListNames", playlist_names.toString());
+                        Log.d("PlayListNames", playlistNames.toString());
                         runOnUiThread(new Runnable() {
 
                             public void run() {
@@ -304,16 +327,15 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject((String) response);
                         JSONArray playlists = jsonObject.getJSONArray("data");
 
-                        playlist_names.clear();
-                        appleMusicPlaylistIds.clear();
+                        playlistNames.clear();
+                        playlistIds.clear();
 
                         for (int i = 0; i < playlists.length(); i++) {
                             JSONObject playlist = playlists.getJSONObject(i);
                             JSONObject attributes = playlist.getJSONObject("attributes");
-                            if (attributes.getBoolean("canEdit")) {
-                                playlist_names.add(attributes.getString("name"));
-                                appleMusicPlaylistIds.add(playlist.getString("id"));
-                            }
+                            playlistNames.add(attributes.getString("name"));
+                            playlistIds.add(playlist.getString("id"));
+
 
                         }
                         runOnUiThread(new Runnable() {
