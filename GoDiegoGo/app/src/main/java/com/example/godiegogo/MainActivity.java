@@ -3,12 +3,16 @@ package com.example.godiegogo;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.ColorStateList;
+import android.util.Log;
+import android.util.Patterns;
+import android.webkit.URLUtil;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.View;
 import android.graphics.Color;
 import android.content.Intent;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -18,6 +22,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import android.os.Bundle;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -62,6 +68,28 @@ public class MainActivity extends AppCompatActivity {
                     checked_playlists.add(checkedTextView.getText().toString());
                 } else {
                     checked_playlists.remove(checkedTextView.getText().toString());
+                }
+            }
+        });
+
+        final EditText search_box = (EditText) findViewById(R.id.playlist_link);
+        final ImageButton search_enter = findViewById(R.id.url_enter_button);
+        search_enter.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String urlString = search_box.getText().toString();
+                if (!urlString.startsWith("https://")) {
+                    urlString = "https://" + urlString;
+                }
+                try {
+                    URL url = new URL(urlString);
+                    if (URLUtil.isValidUrl(urlString) && Patterns.WEB_URL.matcher(urlString).matches()) {
+                        Bundle b = new Bundle();
+                        b.putString("url", urlString);
+                        Intent intent = new Intent(v.getContext(), SearchConfirmActivity.class);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                    }
+                } catch (MalformedURLException ignored) {
                 }
             }
         });
