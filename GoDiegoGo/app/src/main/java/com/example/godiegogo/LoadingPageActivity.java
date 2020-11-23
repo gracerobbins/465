@@ -45,7 +45,7 @@ public class LoadingPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_page);
 
-
+        fakeSpotifyCall(savedInstanceState);
 
         final Button button = findViewById(R.id.cancel_button);
         button.setOnClickListener(new View.OnClickListener() {
