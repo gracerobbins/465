@@ -28,9 +28,18 @@ public class LoadingPageResultsActivity extends AppCompatActivity {
         failed_songs=b.getStringArrayList("failed_songs");
         String transfer_type = b.getString("transfer_type");
         TextView results_header = (TextView)findViewById(R.id.results_header);
-        results_header.setText(transfer_type + " Complete! The following songs could not be copied:");
-
         ListView lv = (ListView) findViewById(R.id.songlist);
+
+        if (failed_songs.size() > 0) {
+            results_header.setText(transfer_type + " complete! The following songs could not be copied:");
+        } else {
+            results_header.setText(transfer_type + " complete! All songs were transferred!");
+            lv.setVisibility(View.INVISIBLE);
+        }
+
+
+
+
         ArrayAdapter<String> itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, failed_songs);
         lv.setAdapter(itemsAdapter);
