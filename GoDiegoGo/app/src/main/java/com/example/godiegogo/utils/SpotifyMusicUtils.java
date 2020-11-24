@@ -58,7 +58,7 @@ public class SpotifyMusicUtils {
         RequestQueue queue = Volley.newRequestQueue(context);
         String userId = SpotifyPreferences.with(context).getUserID();
         String mAccesstoken = SpotifyPreferences.with(context).getUserToken();
-        String url = "https://api.spotify.com/v1/playlists/" + playlistID + "/tracks?market=US&limit=30";
+        String url = "https://api.spotify.com/v1/playlists/" + playlistID + "/tracks?market=US";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
