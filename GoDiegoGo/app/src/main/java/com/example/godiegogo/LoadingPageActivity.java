@@ -1,6 +1,7 @@
 package com.example.godiegogo;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.example.godiegogo.utils.VolleyResponseListener;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.os.Handler;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,19 +52,28 @@ public class LoadingPageActivity extends AppCompatActivity {
     private String userId;
     private Call mCall;
     private ArrayAdapter<String> itemsAdapter;
+    private ProgressBar progressBar;
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        // Grab and set up views
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_page);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        progressBar = (ProgressBar) findViewById(R.id.determinateBar);
+        progressBar.setProgress(0);
 
+        // Initialize class variables
+        copiedSongs = new ArrayList<>();
         newPlaylistIds = new ArrayList<>();
         songsToCopy = new ArrayList<>();
+        failedSongs = new ArrayList<>();
+        songIdsToCopy = new ArrayList<>();
 
+        amtFailed = 0;
 
-        spotifyToApple();
-
+        // Set listener for cancel button
         final Button button = findViewById(R.id.cancel_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -70,6 +81,7 @@ public class LoadingPageActivity extends AppCompatActivity {
             }
         });
 
+        // Set listener for confirm transfer button
         final Button transferButton = findViewById(R.id.confirm_transfer);
         transferButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -103,9 +115,15 @@ public class LoadingPageActivity extends AppCompatActivity {
 
 
         });
+
+        // Transfer songs from Spotify to Apple Music
+        spotifyToApple();
+
+
+        // Set up listview to update songs
         ListView lv = (ListView) findViewById(R.id.songlist);
         itemsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songsToCopy);
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, copiedSongs);
         lv.setAdapter(itemsAdapter);
 
     }
@@ -117,12 +135,9 @@ public class LoadingPageActivity extends AppCompatActivity {
     }
 
     private void spotifyToApple() {
-        Bundle b = this.getIntent().getExtras();
-        copiedSongs = new ArrayList<>();
-        failedSongs = new ArrayList<>();
-        songIdsToCopy = new ArrayList<>();
-        amtFailed = 0;
+
         // Get data from bundle
+        Bundle b = this.getIntent().getExtras();
         checkedPlaylists = b.getStringArrayList("checked_playlists");
         checkedPlaylistIds = b.getStringArrayList("checked_playlist_ids");
         mAccessToken = b.getString("mAccessToken");
@@ -131,13 +146,10 @@ public class LoadingPageActivity extends AppCompatActivity {
 
         // Get views to modify UI
         TextView transferHeader = (TextView) findViewById(R.id.transfer_header);
-        ListView transferredSongs = (ListView) findViewById(R.id.songlist);
-
         transferHeader.setText("Finding songs on: ");
 
-        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, copiedSongs);
-        transferredSongs.setAdapter(itemsAdapter);
 
+        // Grab playlist from Spotify
         ArrayList<String> songNames = new ArrayList<>();
         SpotifyMusicUtils.getPlaylistFromId(getApplicationContext(), checkedPlaylistIds.get(0), new VolleyResponseListener() {
             @Override
@@ -145,22 +157,29 @@ public class LoadingPageActivity extends AppCompatActivity {
                 Log.e("Get Spotify Playlist", message);
             }
 
+            // Handle a good response from the Spotify API
             @Override
             public void onResponse(Object response) {
                 final JSONObject playlist = (JSONObject) response;
                 String playlistName = null;
 
+                // Populate list of songs to search for
                 Log.d("Adding Playlist", "got spotify playlist");
                 try {
                     Log.d("Adding Playlist", playlist.toString(2));
                     JSONArray songs = playlist.getJSONArray("items");
+
+                    // Combine song name and artist name for improved search across services
                     for (int i = 0; i < songs.length(); i++) {
                         JSONObject song = songs.getJSONObject(i).getJSONObject("track");
-                        songNames.add(song.getString("name"));
+                        JSONObject artist = song.getJSONArray("artists").getJSONObject(0);
+                        songNames.add(song.getString("name") + " " + artist.getString("name"));
                     }
 
-                    Log.d("Adding Playlist", "searching song names");
+                    songsToCopy = songNames;
 
+                    // Make async call to search for song on Apple Music
+                    Log.d("Adding Playlist", "Searching song names");
                     for (int i = 0; i < songNames.size(); i++) {
                         searchSongOnAppleMusic(songNames.get(i));
                     }
@@ -192,25 +211,34 @@ public class LoadingPageActivity extends AppCompatActivity {
                     songAttributes = song.getJSONObject("attributes");
 
                     Log.d("song search", "Name: " + songAttributes.getString("name"));
+                    Log.d("song search", "Artist: " + songAttributes.getString("artistName"));
                     Log.d("song search", "ID: " + song.getString("id"));
                     songIdsToCopy.add(song.getString("id"));
-                    songsToCopy.add(songAttributes.getString("name"));
+                    copiedSongs.add(songAttributes.getString("name"));
 
-                    Log.d("song search", songsToCopy.toString());
+                    Log.d("song search", copiedSongs.toString());
                     runOnUiThread(new Runnable() {
                         public void run() {
                             itemsAdapter.notifyDataSetChanged();
+                            double amtCopied = copiedSongs.size();
+                            double amtToCopy = songsToCopy.size();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                progressBar.setProgress( (int) (amtCopied / amtToCopy * 100), true);
+                            } else {
+                                progressBar.setProgress((int) (amtCopied / amtToCopy * 100));
+                            }
                         }
                     });
 
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                    failedSongs.add(songName);
                     amtFailed++;
                 }
             }
         });
 
     }
-    
+
 }
