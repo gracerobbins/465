@@ -80,6 +80,7 @@ public class ServiceSelectorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.service_selector);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         //Spotify
 //        String spotifyToken = "";

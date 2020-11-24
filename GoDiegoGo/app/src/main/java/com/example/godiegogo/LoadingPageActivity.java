@@ -42,6 +42,7 @@ public class LoadingPageActivity extends AppCompatActivity {
     private Call mCall;
     private ArrayAdapter<String> itemsAdapter;
     protected void onCreate(Bundle savedInstanceState) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_page);
 

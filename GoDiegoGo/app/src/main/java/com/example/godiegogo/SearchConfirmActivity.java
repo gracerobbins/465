@@ -46,6 +46,7 @@ public class SearchConfirmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_confirm);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         playlist_songs = new ArrayList<String>();
         playlist_url = new ArrayList<String>();

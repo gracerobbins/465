@@ -22,6 +22,7 @@ public class LoadingPageResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loading_page_results);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         Bundle b = this.getIntent().getExtras();
         failed_songs=b.getStringArrayList("failed_songs");

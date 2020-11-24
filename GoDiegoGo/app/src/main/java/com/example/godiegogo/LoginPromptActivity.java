@@ -15,6 +15,7 @@ public class LoginPromptActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_prompt);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         Bundle b = this.getIntent().getExtras();
         String service_name = b.getString("service");
