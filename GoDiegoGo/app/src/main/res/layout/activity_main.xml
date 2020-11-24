@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Paste a playlist link here"
                 android:textColor="@color/black"
-                android:textSize="11pt"
+                android:textSize="10pt"
                 android:layout_gravity="center_horizontal|top">
             </EditText>
             <ImageButton
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Or select from your playlists:"
-            android:textSize="11pt"
+            android:textSize="10pt"
             android:textColor="@color/black"></TextView>
         <Space
             android:layout_width="match_parent"
