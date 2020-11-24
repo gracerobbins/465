@@ -23,6 +23,7 @@ import android.widget.ImageView;
 
 import android.os.Bundle;
 
+import com.android.volley.Request;
 import com.example.godiegogo.preferences.SpotifyPreferences;
 import com.example.godiegogo.utils.SpotifyMusicUtils;
 import com.spotify.sdk.android.auth.AuthorizationClient;
@@ -55,7 +56,6 @@ import java.util.ArrayList;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 
 
@@ -322,47 +322,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void setAppleMusicToSelector() {
-        try {
-            AppleMusicUtils.getAppleMusicPlaylists(getApplicationContext(), new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                    Log.e("Apple Music", message);
-                }
+        AppleMusicUtils.makeApiRequest(getApplicationContext(), Request.Method.GET, null, getString(R.string.apple_music_grab_playlists_url), new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+                Log.d("Apple Music Playlists", message);
+            }
 
-                @Override
-                public void onResponse(Object response) {
-                    try {
-                        Log.d("Apple Music", "We got response");
-                        JSONObject jsonObject = new JSONObject((String) response);
-                        JSONArray playlists = jsonObject.getJSONArray("data");
+            @Override
+            public void onResponse(Object response) {
+                try {
+                    Log.d("Apple Music", "We got response");
+                    JSONObject jsonObject = (JSONObject) response;
+                    JSONArray playlists = jsonObject.getJSONArray("data");
 
-                        playlistNames.clear();
-                        playlistIds.clear();
+                    playlistNames.clear();
+                    playlistIds.clear();
 
-                        for (int i = 0; i < playlists.length(); i++) {
-                            JSONObject playlist = playlists.getJSONObject(i);
-                            JSONObject attributes = playlist.getJSONObject("attributes");
-                            playlistNames.add(attributes.getString("name"));
-                            playlistIds.add(playlist.getString("id"));
+                    for (int i = 0; i < playlists.length(); i++) {
+                        JSONObject playlist = playlists.getJSONObject(i);
+                        JSONObject attributes = playlist.getJSONObject("attributes");
+                        playlistNames.add(attributes.getString("name"));
+                        playlistIds.add(playlist.getString("id"));
 
+
+                    }
+                    runOnUiThread(new Runnable() {
+
+                        public void run() {
+                            itemsAdapter.notifyDataSetChanged();
 
                         }
-                        runOnUiThread(new Runnable() {
-
-                            public void run() {
-                                itemsAdapter.notifyDataSetChanged();
-
-                            }
-                        });
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            }
+        });
 
     }
 

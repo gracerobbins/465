@@ -13,6 +13,7 @@ import android.content.Intent;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ArrayList;
+import com.android.volley.Request;
 import com.example.godiegogo.R;
 import com.example.godiegogo.preferences.ApplePreferences;
 import com.example.godiegogo.utils.AppleMusicUtils;
@@ -33,10 +34,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class LoadingPageActivity extends AppCompatActivity {
     public ArrayList<String> copiedSongs;
@@ -95,7 +93,7 @@ public class LoadingPageActivity extends AppCompatActivity {
                 try {
                     JSONObject tracksToAdd = AppleMusicUtils.createSongList(songIdsToCopy);
                     JSONObject playlistToAdd = AppleMusicUtils.makeEmptyJSONPlaylist(checkedPlaylists.get(0), null, tracksToAdd);
-                    AppleMusicUtils.addNewPlaylist(getApplicationContext(), playlistToAdd, new VolleyResponseListener() {
+                    AppleMusicUtils.makeApiRequest(getApplicationContext(), Request.Method.POST, playlistToAdd, getString(R.string.apple_music_create_playlist_url), new VolleyResponseListener() {
                         @Override
                         public void onError(String message) {
                             Log.d("Adding Playlist", "playlist failed");
@@ -199,13 +197,13 @@ public class LoadingPageActivity extends AppCompatActivity {
 
     // Given a song name, search for it on Apple Music and add the ID to songIdsToCopy[]
     private void searchSongOnAppleMusic(String songName) {
-        AppleMusicUtils.searchForSong(getApplicationContext(), songName, new VolleyResponseListener() {
+        String url = AppleMusicUtils.generateSongSearchURL(songName);
+        AppleMusicUtils.makeApiRequest(getApplicationContext(), Request.Method.GET, null, url, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
                 Log.e("Search Song", message);
             }
 
-            // Handle correct response returned
             @Override
             public void onResponse(Object response) {
                 // Format response and set up variables
