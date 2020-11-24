@@ -29,7 +29,7 @@ public class SpotifyMusicUtils {
         RequestQueue queue = Volley.newRequestQueue(context);
         String userId = SpotifyPreferences.with(context).getUserID();
         String mAccessToken = SpotifyPreferences.with(context).getUserToken();
-        String url = "https://api.spotify.com/v1/users/" + userId + "/playlists?limit=20";
+        String url = "https://api.spotify.com/v1/users/" + userId + "/playlists";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -46,11 +46,41 @@ public class SpotifyMusicUtils {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("Authorization", "Bearer " + mAccessToken);
-//                params.put("Music-User-Token", ApplePreferences.with(context).getUserToken());
                 return params;
             }
         };
 
         queue.add(stringRequest);
+    }
+
+    public static void getPlaylistFromId(Context context, String playlistID, final VolleyResponseListener listener) {
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String userId = SpotifyPreferences.with(context).getUserID();
+        String mAccesstoken = SpotifyPreferences.with(context).getUserToken();
+        String url = "https://api.spotify.com/v1/playlists/" + playlistID + "/tracks?market=US&limit=30";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                listener.onResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onError("VolleyError: " + error.toString());
+            }
+
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "Bearer " + mAccesstoken);
+                return params;
+            }
+        };
+
+        queue.add(jsonObjectRequest);
+
     }
 }

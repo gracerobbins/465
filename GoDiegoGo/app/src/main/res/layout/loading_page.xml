@@ -41,8 +41,8 @@
                 android:backgroundTint="#00000000">
             </ImageButton>
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
                 android:src="@drawable/right_arrow"
                 android:scaleType="centerCrop">
             </ImageView>
@@ -84,6 +84,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"></Space>
+
+        <Button xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/confirm_transfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/dark_spring_green"
+            android:text="Transfer"
+            android:layout_gravity="center_horizontal|bottom">
+        </Button>
         <Button xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
