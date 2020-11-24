@@ -6,6 +6,9 @@
     <string name="com_spotify_sdk_redirect_scheme">GoDiegoGo-login</string>
     <string name="com_spotify_sdk_redirect_host">callback</string>
     <string name="jwt_token">eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IkdBN1M1SEo4NEcifQ.eyJpc3MiOiIzWjlYSDJCN1Y0IiwiZXhwIjoxNjIxNjIyNzUyLCJpYXQiOjE2MDYwNzQzNTJ9.HgebqydfC5_DJ3Hh1N1CqfFlvz3DkIxFAmGTrUyiqCvNzLkNy7NXbMGYG8OdveaJ3whedo_miookdabAp1psQg</string>
+    <string name="apple_music_grab_playlists_url">https://api.music.apple.com/v1/me/library/playlists?limit=100</string>
+    <string name="apple_music_create_playlist_url">https://api.music.apple.com/v1/me/library/playlists</string>
     <integer name="requestcode_applemusic_auth">3456</integer>
+
 
 </resources>
