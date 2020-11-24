@@ -168,7 +168,6 @@ public class LoadingPageActivity extends AppCompatActivity {
                 try {
                     Log.d("Adding Playlist", playlist.toString(2));
                     JSONArray songs = playlist.getJSONArray("items");
-
                     // Combine song name and artist name for improved search across services
                     for (int i = 0; i < songs.length(); i++) {
                         JSONObject song = songs.getJSONObject(i).getJSONObject("track");
@@ -192,6 +191,7 @@ public class LoadingPageActivity extends AppCompatActivity {
 
     }
 
+    // Given a song name, search for it on Apple Music and add the ID to songIdsToCopy[]
     private void searchSongOnAppleMusic(String songName) {
         AppleMusicUtils.searchForSong(getApplicationContext(), songName, new VolleyResponseListener() {
             @Override
@@ -199,31 +199,43 @@ public class LoadingPageActivity extends AppCompatActivity {
                 Log.e("Search Song", message);
             }
 
+            // Handle correct response returned
             @Override
             public void onResponse(Object response) {
+                // Format response and set up variables
                 JSONObject formattedResponse = (JSONObject) response;
-
+                JSONArray songList = null;
                 JSONObject song = null;
                 JSONObject songAttributes = null;
 
                 try {
-                    song = formattedResponse.getJSONObject("results").getJSONObject("songs").getJSONArray("data").getJSONObject(0);
-                    songAttributes = song.getJSONObject("attributes");
+                    // Get the song and attributes
+                    songList = formattedResponse.getJSONObject("results").getJSONObject("songs").getJSONArray("data");
 
-                    Log.d("song search", "Name: " + songAttributes.getString("name"));
-                    Log.d("song search", "Artist: " + songAttributes.getString("artistName"));
-                    Log.d("song search", "ID: " + song.getString("id"));
-                    songIdsToCopy.add(song.getString("id"));
-                    copiedSongs.add(songAttributes.getString("name"));
+                    // If there are no search results, add the song name to the missing songs list
+                    if (songList.length() == 0) {
+                        failedSongs.add(songName);
+                        amtFailed++;
+                    } else {
+                        song = songList.getJSONObject(0);
+                        songAttributes = song.getJSONObject("attributes");
 
-                    Log.d("song search", copiedSongs.toString());
+                        // Confirm song in logs, and add the ID and name to respective lists
+                        Log.d("song search", "Name: " + songAttributes.getString("name"));
+                        Log.d("song search", "Artist: " + songAttributes.getString("artistName"));
+                        Log.d("song search", "ID: " + song.getString("id"));
+                        songIdsToCopy.add(song.getString("id"));
+                        copiedSongs.add(songAttributes.getString("name"));
+                    }
+
+                    // Update UI to reflect the songs found as well as the progress bar to show the overall progress
                     runOnUiThread(new Runnable() {
                         public void run() {
                             itemsAdapter.notifyDataSetChanged();
                             double amtCopied = copiedSongs.size();
                             double amtToCopy = songsToCopy.size();
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                progressBar.setProgress( (int) (amtCopied / amtToCopy * 100), true);
+                                progressBar.setProgress( (int) ((amtFailed + amtCopied) / amtToCopy * 100), true);
                             } else {
                                 progressBar.setProgress((int) (amtCopied / amtToCopy * 100));
                             }
@@ -235,6 +247,19 @@ public class LoadingPageActivity extends AppCompatActivity {
                     e.printStackTrace();
                     failedSongs.add(songName);
                     amtFailed++;
+
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            itemsAdapter.notifyDataSetChanged();
+                            double amtCopied = copiedSongs.size();
+                            double amtToCopy = songsToCopy.size();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                progressBar.setProgress( (int) ((amtFailed + amtCopied) / amtToCopy * 100), true);
+                            } else {
+                                progressBar.setProgress((int) (amtCopied / amtToCopy * 100));
+                            }
+                        }
+                    });
                 }
             }
         });
