@@ -32,6 +32,7 @@ import android.content.res.ColorStateList;
 import android.widget.CheckedTextView;
 import android.widget.GridView;
 import android.widget.AdapterView;
+import com.example.godiegogo.preferences.ApplePreferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         checked_playlists = new ArrayList<String>();
         checked_playlist_ids = new ArrayList<String>();
         playlistNames = new ArrayList<String>();
-
         playlistIds = new ArrayList<String>();
         itemsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, playlistNames);
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         transfer_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = getSyncOrTransferBundle();
-
+                b.putString("transfer_type", "Transferring");
                 Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
                 intent.putExtras(b);
                 startActivity(intent);
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         sync_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = getSyncOrTransferBundle();
-
+                b.putString("transfer_type", "Syncing");
                 Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
                 intent.putExtras(b);
                 startActivity(intent);
