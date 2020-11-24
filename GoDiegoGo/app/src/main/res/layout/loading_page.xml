@@ -84,23 +84,33 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"></Space>
-
-        <Button xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/confirm_transfer"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark_spring_green"
-            android:text="Transfer"
-            android:layout_gravity="center_horizontal|bottom">
-        </Button>
-        <Button xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/dark_spring_green"
-            android:text="Cancel"
-            android:layout_gravity="center_horizontal|bottom">
-        </Button>
+            android:orientation="horizontal">
+            <Button xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/confirm_transfer"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_spring_green"
+                android:text="Transfer"
+                android:layout_gravity="center_horizontal|bottom">
+            </Button>
+            <Space
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="0dp"></Space>
+            <Button xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/cancel_button"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/dark_spring_green"
+                android:text="Cancel"
+                android:layout_gravity="center_horizontal|bottom">
+            </Button>
+        </LinearLayout>
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"

@@ -81,8 +81,15 @@ public class LoadingPageActivity extends AppCompatActivity {
             }
         });
 
-        // Set listener for confirm transfer button
+        //If user is syncing, set the transfer button text accordingly
         final Button transferButton = findViewById(R.id.confirm_transfer);
+        Bundle b = this.getIntent().getExtras();
+        String transferType = b.getString("transfer_type");
+        if (transferType.equals("Syncing")) {
+            Log.println(Log.DEBUG, "tag", "setting the transfer button text");
+            transferButton.setText("Sync");
+        }
+        // Set listener for confirm transfer button
         transferButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 try {
@@ -104,7 +111,7 @@ public class LoadingPageActivity extends AppCompatActivity {
                 }
                 Bundle b = new Bundle();
                 b.putStringArrayList("failed_songs", failedSongs);
-                b.putString("transfer_type", "Transfer");
+                b.putString("transfer_type", transferType);
                 Intent intent = new Intent(LoadingPageActivity.this, LoadingPageResultsActivity.class);
                 intent.putExtras(b);
 
@@ -142,7 +149,6 @@ public class LoadingPageActivity extends AppCompatActivity {
         checkedPlaylistIds = b.getStringArrayList("checked_playlist_ids");
         mAccessToken = b.getString("mAccessToken");
         userId = b.getString("userId");
-        String transferType = b.getString("transfer_type");
 
         // Get views to modify UI
         TextView transferHeader = (TextView) findViewById(R.id.transfer_header);
