@@ -101,11 +101,23 @@ public class ServiceSelectorActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Log.d("Token Persisted", spotifyToken);
             // handle SELECT function to return service back to main menu
+            Button button = findViewById(R.id.Spotify_signin);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Log.d("Token Persisted", spotifyToken);
+                    Intent intent = new Intent();
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("mAccessToken", mAccessToken);
+                    intent.putExtra("chosenService", "Spotify");
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            });
         }
         //Apple Music
 
+//        String appleToken = ApplePreferences.with(getApplicationContext()).getUserToken();
         String appleToken = ApplePreferences.with(getApplicationContext()).getUserToken();
         if (appleToken == null || appleToken.isEmpty()) {
             Button button = findViewById(R.id.Apple_signin);
@@ -125,6 +137,17 @@ public class ServiceSelectorActivity extends AppCompatActivity {
             });
         } else {
             // handle SELECT function to return service back to main menu
+            Button button = findViewById(R.id.Apple_signin);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("mAccessToken", mAccessToken);
+                    intent.putExtra("chosenService", "Apple Music");
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            });
         }
         //Tidal
         String tidalToken = null;
@@ -233,6 +256,7 @@ public class ServiceSelectorActivity extends AppCompatActivity {
                         Intent intent = new Intent();
                         intent.putExtra("userId", userId);
                         intent.putExtra("mAccessToken", mAccessToken);
+                        intent.putExtra("chosenService", "Spotify");
                         setResult(RESULT_OK, intent);
                         finish();
                     } catch (JSONException e) {

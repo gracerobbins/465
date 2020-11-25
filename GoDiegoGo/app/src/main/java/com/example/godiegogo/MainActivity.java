@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public static final int AUTH_TOKEN_REQUEST_CODE = 0x10;
     public static final int AUTH_CODE_REQUEST_CODE = 0x11;
     public static final int MAIN_ACTIVITY = 1;
-    public static final int SERVICE_SELECTOR_ACTIVITY = 2;
+    public static final int SERVICE_SELECTOR_LEFT_ACTIVITY = 2;
+    public static final int SERVICE_SELECTOR_RIGHT_ACTIVITY = 3;
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private String mAccessToken;
     private String mAccessCode;
@@ -105,9 +106,7 @@ public class MainActivity extends AppCompatActivity {
         // Temporary Measure until we figure out requesting refresh keys
         SpotifyPreferences.with(getApplicationContext()).setSpotifyUserToken(null);
 
-
         grid_view = (GridView) findViewById(R.id.playlist_selector);
-
         grid_view.setAdapter(itemsAdapter);
         grid_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -183,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final ImageButton swap_button = findViewById(R.id.swap_button);
-
         swap_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LinearLayout layout = findViewById(R.id.transfer_icon_list);
@@ -199,33 +197,45 @@ public class MainActivity extends AppCompatActivity {
                 layout.addView(leftButton);
 
                 int leftButtonId = rightButton.getId();
-                updatePlaylistSelector(leftButtonId);
+                updatePlaylistSelector();
 
             }
         });
 
-        final ImageButton spotify_button = findViewById(R.id.spotify_icon);
-        spotify_button_id = spotify_button.getId();
-        spotify_button.setOnClickListener(new View.OnClickListener() {
+        final ImageButton button_one = findViewById(R.id.icon_one);
+        spotify_button_id = button_one.getId();
+        button_one.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 Intent intent = new Intent(v.getContext(), ServiceSelectorActivity.class);
-                startActivityForResult(intent, SERVICE_SELECTOR_ACTIVITY);
+                LinearLayout layout = findViewById(R.id.transfer_icon_list);
+                int leftButtonId = layout.getChildAt(0).getId();
+                if (leftButtonId == spotify_button_id) {
+                    startActivityForResult(intent, SERVICE_SELECTOR_LEFT_ACTIVITY);
+                } else {
+                    startActivityForResult(intent, SERVICE_SELECTOR_RIGHT_ACTIVITY);
+                }
             }
         });
 
-        final ImageButton apple_button = findViewById(R.id.apple_icon);
-        apple_button_id = apple_button.getId();
-        apple_button.setOnClickListener(new View.OnClickListener() {
+        final ImageButton button_two = findViewById(R.id.icon_two);
+        apple_button_id = button_two.getId();
+        button_two.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 Intent intent = new Intent(v.getContext(), ServiceSelectorActivity.class);
-                startActivity(intent);
+                LinearLayout layout = findViewById(R.id.transfer_icon_list);
+                int leftButtonId = layout.getChildAt(0).getId();
+                if (leftButtonId == apple_button_id) {
+                    startActivityForResult(intent, SERVICE_SELECTOR_LEFT_ACTIVITY);
+                } else {
+                    startActivityForResult(intent, SERVICE_SELECTOR_RIGHT_ACTIVITY);
+                }
             }
         });
 
-        updatePlaylistSelector(spotify_button_id);
+        updatePlaylistSelector();
     }
 
 
@@ -247,7 +257,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == SERVICE_SELECTOR_ACTIVITY) {
+        if (resultCode == RESULT_OK && (requestCode == SERVICE_SELECTOR_LEFT_ACTIVITY || requestCode == SERVICE_SELECTOR_RIGHT_ACTIVITY)) {
+            LinearLayout layout = findViewById(R.id.transfer_icon_list);
+            //update the button icon to match chosen service
+            if (data.hasExtra("chosenService")) {
+                ImageButton buttonToSwap;
+                if (requestCode == SERVICE_SELECTOR_LEFT_ACTIVITY) {
+                    buttonToSwap = (ImageButton)layout.getChildAt(0);
+                } else {
+                    buttonToSwap = (ImageButton) layout.getChildAt(2);
+                }
+                if (data.getStringExtra("chosenService").equals("Spotify")) {
+                    buttonToSwap.setImageResource(R.drawable.spotify_icon_small);
+                    buttonToSwap.setTag("spotify_button");
+                } else if (data.getStringExtra("chosenService").equals("Apple Music")){
+                    buttonToSwap.setImageResource(R.drawable.apple_music_logo);
+                    buttonToSwap.setTag("apple_button");
+                }
+            }
             if (data.hasExtra("userId")) {
                 userId = data.getStringExtra("userId");
                 SpotifyPreferences.with(getApplicationContext()).setSpotifyUserId(userId);
@@ -260,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout layout = findViewById(R.id.transfer_icon_list);
         ImageButton leftButton = (ImageButton)layout.getChildAt(0);
-        updatePlaylistSelector(leftButton.getId());
+        updatePlaylistSelector();
 
 
     }
@@ -361,11 +388,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updatePlaylistSelector(int leftButtonId) {
-        if (leftButtonId == apple_button_id) {
+    private void updatePlaylistSelector() {
+        LinearLayout layout = findViewById(R.id.transfer_icon_list);
+        ImageButton leftButton = (ImageButton)layout.getChildAt(0);
+        ImageButton rightButton = (ImageButton)layout.getChildAt(2);
+        Button transferButton = findViewById(R.id.transfer_button);
+        Button syncButton = findViewById(R.id.sync_button);
+
+        if (leftButton.getTag() != null && rightButton.getTag() != null) {
+            transferButton.setEnabled(true);
+            syncButton.setEnabled(true);
+        }
+
+        if (leftButton.getTag() != null && leftButton.getTag().equals("apple_button")) {
             Log.d("Playlist Selector", "Left button is Apple Music; adding playlists");
             setAppleMusicToSelector();
-        } else if (leftButtonId == spotify_button_id) {
+        } else if (leftButton.getTag() != null && leftButton.getTag().equals("spotify_button")) {
             Log.d("Playlist Selector", "Left button is Spotify; adding playlists.");
             setSpotifyMusicToSelector();
         }
@@ -381,19 +419,18 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Transfer", "CheckedPlaylists: " + checked_playlists.toString());
         Log.d("Transfer", "CheckedPlaylistIds: " + checked_playlist_ids.toString());
 
-        if (leftButton.getId() == spotify_button_id) {
+        if (leftButton.getTag().equals("spotify_button")) {
             Log.d("Transfer", "Transferring Spotify Playlists");
             b.putString("transfer_type", "Transferring");
             b.putString("mAccessToken", mAccessToken);
             b.putString("userId", userId);
             b.putSerializable("transferFrom", Service.SPOTIFY);
             b.putSerializable("transferTo", Service.APPLE_MUSIC);
-        } else if (leftButton.getId() == apple_button_id) {
+        } else if (leftButton.getTag().equals("apple_button")) {
             Log.d("Transfer", "Transferring Apple Music Playlists");
             b.putSerializable("transferFrom", Service.APPLE_MUSIC);
             b.putSerializable("transferTo", Service.SPOTIFY);
         }
-
         return b;
     }
 

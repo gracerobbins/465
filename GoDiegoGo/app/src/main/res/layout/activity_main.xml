@@ -51,12 +51,12 @@
             android:layout_gravity="center_horizontal|top">
 
             <ImageButton
-                android:id="@+id/spotify_icon"
+                android:id="@+id/icon_one"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:backgroundTint="#00000000"
                 android:scaleType="centerCrop"
-                android:src="@drawable/spotify_icon_small"></ImageButton>
+                android:src="@drawable/select_service"></ImageButton>
 
             <ImageView
                 android:layout_width="90dp"
@@ -65,10 +65,10 @@
                 android:scaleType="centerCrop">
             </ImageView>
             <ImageButton
-                android:id="@+id/apple_icon"
+                android:id="@+id/icon_two"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/apple_music_logo"
+                android:src="@drawable/select_service"
                 android:scaleType="centerCrop"
                 android:backgroundTint="#00000000">
             </ImageButton>
@@ -110,10 +110,12 @@
             android:orientation="horizontal">
             <Button xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/transfer_button"
+                android:enabled="false"
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/dark_spring_green"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:text="Transfer"
                 android:layout_gravity="center_horizontal|bottom">
             </Button>
@@ -123,10 +125,12 @@
                 android:layout_height="0dp"></Space>
             <Button xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/sync_button"
+                android:enabled="false"
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/dark_spring_green"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:text="Sync"
                 android:layout_gravity="center_horizontal|bottom">
             </Button>
