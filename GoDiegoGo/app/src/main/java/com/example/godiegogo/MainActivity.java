@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private int spotify_button_id;
     private int apple_button_id;
 
+
     public ArrayList<String> checked_playlist_ids;
 
 
@@ -107,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         grid_view = (GridView) findViewById(R.id.playlist_selector);
-
         grid_view.setAdapter(itemsAdapter);
         grid_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
