@@ -166,6 +166,14 @@ public class SearchConfirmActivity extends AppCompatActivity {
                    b.putString("mAccessToken", accessToken);
                    b.putString("userId", SpotifyPreferences.with(getApplicationContext()).getUserID());
                    b.putString("transfer_type", "Transferring");
+                   b.putSerializable("transferTo", MainActivity.Service.APPLE_MUSIC);
+
+                   if (url.contains("spotify")) {
+                       b.putSerializable("transferFrom", MainActivity.Service.SPOTIFY);
+                   } else if (url.contains("apple")) {
+                       b.putSerializable("transferFrom", MainActivity.Service.APPLE_MUSIC);
+                   }
+
 
                    Intent intent = new Intent(v.getContext(), LoadingPageActivity.class);
                    intent.putExtras(b);

@@ -105,7 +105,6 @@ public class ServiceSelectorActivity extends AppCompatActivity {
             // handle SELECT function to return service back to main menu
         }
         //Apple Music
-
         String appleToken = ApplePreferences.with(getApplicationContext()).getUserToken();
         if (appleToken == null || appleToken.isEmpty()) {
             Button button = findViewById(R.id.Apple_signin);
@@ -125,6 +124,7 @@ public class ServiceSelectorActivity extends AppCompatActivity {
             });
         } else {
             // handle SELECT function to return service back to main menu
+
         }
         //Tidal
         String tidalToken = null;
@@ -179,7 +179,7 @@ public class ServiceSelectorActivity extends AppCompatActivity {
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
                 .setShowDialog(false)
-                .setScopes(new String[]{"user-read-private"})
+                .setScopes(new String[]{"user-read-private", "playlist-modify-private", "user-library-modify", "playlist-modify-public"})
                 .setCampaign("com.example.godiegogo")
                 .build();
 
@@ -262,24 +262,5 @@ public class ServiceSelectorActivity extends AppCompatActivity {
                 .authority(getString(R.string.com_spotify_sdk_redirect_host))
                 .build();
     }
-
-    // This method is used to handle the results from any activity that was called from this one.
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//
-//        if (requestCode == REQUESTCODE_APPLEMUSIC_AUTH) {
-//            TokenResult tokenResult = appleAuthenticationManager.handleTokenResult(data);
-//
-//            if (!tokenResult.isError()) {
-//                String appleMusicUserToken = tokenResult.getMusicUserToken();
-//                ApplePreferences.with(getApplicationContext()).setAppleMusicUserToken(appleMusicUserToken);
-//                Log.d("Apple Music", "User Token: " + appleMusicUserToken);
-//            } else {
-//                Log.e("Apple Music", "Error getting token: " + tokenResult.getError());
-//            }
-//        } else {
-//            super.onActivityResult(requestCode, resultCode, data);
-//        }
-//    }
 
 }

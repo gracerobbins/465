@@ -34,6 +34,7 @@
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal|top">
             <ImageButton
+                android:id="@+id/leftService"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/spotify_icon_small"
@@ -47,7 +48,7 @@
                 android:scaleType="centerCrop">
             </ImageView>
             <ImageButton
-                android:id="@+id/main_menu"
+                android:id="@+id/rightService"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/apple_music_logo"
