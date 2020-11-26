@@ -1,6 +1,7 @@
 package com.example.godiegogo.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -82,5 +83,46 @@ public class SpotifyMusicUtils {
 
         queue.add(jsonObjectRequest);
 
+    }
+
+    // Make an API request to Spotify API
+    public static void makeApiRequest(Context context, int requestMethod, JSONObject jsonObjectForRequest, String url, final VolleyResponseListener listener) {
+        Log.d("Api Request", "Method: " + requestMethod + " - Url: " + url);
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(requestMethod, url, jsonObjectForRequest, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                listener.onResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onError("VolleyError: " + error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "Bearer " + SpotifyPreferences.with(context).getUserToken());
+                return params;
+            }
+        };
+        queue.add(jsonObjectRequest);
+    }
+
+    public static JSONObject makeEmptyJSONPlaylist(String name, String description) throws IllegalArgumentException, JSONException {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name is null or empty");
+        }
+
+        JSONObject playlist = new JSONObject();
+        playlist.put("name", name);
+
+        if (description != null && !description.isEmpty()) {
+            playlist.put("description", description);
+        }
+
+        return playlist;
     }
 }

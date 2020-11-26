@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private int button_one_id;
     private int button_two_id;
 
+
     public ArrayList<String> checked_playlist_ids;
 
 
@@ -440,6 +441,7 @@ public class MainActivity extends AppCompatActivity {
 
         b.putStringArrayList("checked_playlists", checked_playlists);
         b.putStringArrayList("checked_playlist_ids", checked_playlist_ids);
+        b.putInt("current_playlist", 0);
         Log.d("Transfer", "CheckedPlaylists: " + checked_playlists.toString());
         Log.d("Transfer", "CheckedPlaylistIds: " + checked_playlist_ids.toString());
 

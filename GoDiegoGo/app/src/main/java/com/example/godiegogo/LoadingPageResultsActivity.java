@@ -2,6 +2,7 @@ package com.example.godiegogo;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -37,7 +38,9 @@ public class LoadingPageResultsActivity extends AppCompatActivity {
             lv.setVisibility(View.INVISIBLE);
         }
 
-
+        int currentPlaylist = b.getInt("current_playlist");
+        ArrayList<String> checkedPlaylists = b.getStringArrayList("checked_playlists");
+        boolean morePlaylists = currentPlaylist < checkedPlaylists.size() - 1;
 
 
         ArrayAdapter<String> itemsAdapter =
@@ -45,9 +48,20 @@ public class LoadingPageResultsActivity extends AppCompatActivity {
         lv.setAdapter(itemsAdapter);
 
         final Button button = findViewById(R.id.main_menu_button);
+        if (morePlaylists) {
+            button.setText("Transfer next playlist");
+        }
         button.setOnClickListener(new View.OnClickListener() {
+
             public void onClick(View v) {
+                if (morePlaylists) {
+                    b.putInt("current_playlist", currentPlaylist + 1);
+                    Intent intent = new Intent(LoadingPageResultsActivity.this, LoadingPageActivity.class);
+                    intent.putExtras(b);
+                    startActivity(intent);
+                }
                 finish();
+
             }
         });
     }
