@@ -129,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
                     checked_playlists.remove(checkedTextView.getText().toString());
 
                 }
+
+                Log.d("checked playlists", checked_playlists.toString());
             }
         });
 
@@ -378,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
 
         b.putStringArrayList("checked_playlists", checked_playlists);
         b.putStringArrayList("checked_playlist_ids", checked_playlist_ids);
+        b.putInt("current_playlist", 0);
         Log.d("Transfer", "CheckedPlaylists: " + checked_playlists.toString());
         Log.d("Transfer", "CheckedPlaylistIds: " + checked_playlist_ids.toString());
 

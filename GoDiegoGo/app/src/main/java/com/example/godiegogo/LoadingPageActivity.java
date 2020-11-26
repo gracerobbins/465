@@ -58,6 +58,8 @@ public class LoadingPageActivity extends AppCompatActivity {
     private Runnable updateProgressBar;
     private MainActivity.Service transferFrom;
     private MainActivity.Service transferTo;
+    private int currentPlaylist;
+
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -84,6 +86,10 @@ public class LoadingPageActivity extends AppCompatActivity {
         checkedPlaylistIds = b.getStringArrayList("checked_playlist_ids");
         mAccessToken = b.getString("mAccessToken");
         userId = b.getString("userId");
+        currentPlaylist = b.getInt("current_playlist");
+
+        Log.d("checkedPlaylists", checkedPlaylists.toString());
+        Log.d("current playlist", checkedPlaylists.get(currentPlaylist));
 
 
         // Set service icons
@@ -111,7 +117,6 @@ public class LoadingPageActivity extends AppCompatActivity {
 
         //If user is syncing, set the transfer button text accordingly
         final Button transferButton = findViewById(R.id.confirm_transfer);
-        Bundle b = this.getIntent().getExtras();
         String transferType = b.getString("transfer_type");
         if (transferType.equals("Syncing")) {
             Log.println(Log.DEBUG, "tag", "setting the transfer button text");
@@ -129,6 +134,14 @@ public class LoadingPageActivity extends AppCompatActivity {
                 Bundle b = new Bundle();
                 b.putStringArrayList("failed_songs", failedSongs);
                 b.putString("transfer_type", transferType);
+                b.putInt("current_playlist", currentPlaylist);
+                b.putStringArrayList("checked_playlists", checkedPlaylists);
+                b.putStringArrayList("checked_playlist_ids", checkedPlaylistIds);
+                b.putString("transfer_type", "Transferring");
+                b.putString("mAccessToken", mAccessToken);
+                b.putString("userId", userId);
+                b.putSerializable("transferTo", transferTo);
+                b.putSerializable("transferFrom", transferFrom);
                 Intent intent = new Intent(LoadingPageActivity.this, LoadingPageResultsActivity.class);
                 intent.putExtras(b);
 
@@ -184,7 +197,7 @@ public class LoadingPageActivity extends AppCompatActivity {
 
         // Grab playlist from Spotify
         ArrayList<String> songNames = new ArrayList<>();
-        SpotifyMusicUtils.getPlaylistFromId(getApplicationContext(), checkedPlaylistIds.get(0), new VolleyResponseListener() {
+        SpotifyMusicUtils.getPlaylistFromId(getApplicationContext(), checkedPlaylistIds.get(currentPlaylist), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
                 Log.e("Get Spotify Playlist", message);
@@ -234,7 +247,7 @@ public class LoadingPageActivity extends AppCompatActivity {
         // Grab Playlist from Apple Music
         ArrayList<String> songNames = new ArrayList<>();
 
-        String url = "https://api.music.apple.com/v1/me/library/playlists/" + checkedPlaylistIds.get(0) + "/tracks";
+        String url = "https://api.music.apple.com/v1/me/library/playlists/" + checkedPlaylistIds.get(currentPlaylist) + "/tracks";
         AppleMusicUtils.makeApiRequest(getApplicationContext(), Request.Method.GET, null, url, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
@@ -386,7 +399,7 @@ public class LoadingPageActivity extends AppCompatActivity {
     private void addPlaylistToAppleMusic() {
         try {
             JSONObject tracksToAdd = AppleMusicUtils.createSongList(songIdsToCopy);
-            JSONObject playlistToAdd = AppleMusicUtils.makeEmptyJSONPlaylist(checkedPlaylists.get(0), null, tracksToAdd);
+            JSONObject playlistToAdd = AppleMusicUtils.makeEmptyJSONPlaylist(checkedPlaylists.get(currentPlaylist), null, tracksToAdd);
             AppleMusicUtils.makeApiRequest(getApplicationContext(), Request.Method.POST, playlistToAdd, getString(R.string.apple_music_create_playlist_url), new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
@@ -405,7 +418,7 @@ public class LoadingPageActivity extends AppCompatActivity {
 
     private void addPlaylistToSpotify() {
         try {
-            JSONObject newPlaylist = SpotifyMusicUtils.makeEmptyJSONPlaylist(checkedPlaylists.get(0), null);
+            JSONObject newPlaylist = SpotifyMusicUtils.makeEmptyJSONPlaylist(checkedPlaylists.get(currentPlaylist), null);
             Log.d("Adding Playlist", newPlaylist.toString(3));
             String url = "https://api.spotify.com/v1/users/" + SpotifyPreferences.with(getApplicationContext()).getUserID() + "/playlists";
             SpotifyMusicUtils.makeApiRequest(getApplicationContext(), Request.Method.POST, newPlaylist, url, new VolleyResponseListener() {
