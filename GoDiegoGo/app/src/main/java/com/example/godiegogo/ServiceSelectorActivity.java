@@ -141,8 +141,6 @@ public class ServiceSelectorActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     Intent intent = new Intent();
-                    intent.putExtra("userId", userId);
-                    intent.putExtra("mAccessToken", mAccessToken);
                     intent.putExtra("chosenService", "Apple Music");
                     setResult(RESULT_OK, intent);
                     finish();

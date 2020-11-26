@@ -7,14 +7,17 @@ import android.net.Uri;
 
 import android.content.res.ColorStateList;
 
+import android.os.Debug;
 import android.util.Log;
 import android.util.Patterns;
+import android.util.SparseBooleanArray;
 import android.webkit.URLUtil;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.view.View;
 import android.graphics.Color;
 import android.content.Intent;
+import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.LinearLayout;
@@ -76,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
     private Call mCall;
     private ArrayAdapter<String> itemsAdapter;
     public ArrayList<String> checked_playlists;
-    private int spotify_button_id;
-    private int apple_button_id;
+    private int button_one_id;
+    private int button_two_id;
 
     public ArrayList<String> checked_playlist_ids;
 
@@ -128,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     checked_playlists.remove(checkedTextView.getText().toString());
 
                 }
+                updateSyncTransferButtons();
             }
         });
 
@@ -196,14 +200,13 @@ public class MainActivity extends AppCompatActivity {
                 layout.addView(arrow);
                 layout.addView(leftButton);
 
-                int leftButtonId = rightButton.getId();
                 updatePlaylistSelector();
-
+                clearCheckboxes();
             }
         });
 
         final ImageButton button_one = findViewById(R.id.icon_one);
-        spotify_button_id = button_one.getId();
+        button_one_id = button_one.getId();
         button_one.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -211,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), ServiceSelectorActivity.class);
                 LinearLayout layout = findViewById(R.id.transfer_icon_list);
                 int leftButtonId = layout.getChildAt(0).getId();
-                if (leftButtonId == spotify_button_id) {
+                if (leftButtonId == button_one_id) {
                     startActivityForResult(intent, SERVICE_SELECTOR_LEFT_ACTIVITY);
                 } else {
                     startActivityForResult(intent, SERVICE_SELECTOR_RIGHT_ACTIVITY);
@@ -220,21 +223,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final ImageButton button_two = findViewById(R.id.icon_two);
-        apple_button_id = button_two.getId();
+        button_two_id = button_two.getId();
         button_two.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 Intent intent = new Intent(v.getContext(), ServiceSelectorActivity.class);
                 LinearLayout layout = findViewById(R.id.transfer_icon_list);
                 int leftButtonId = layout.getChildAt(0).getId();
-                if (leftButtonId == apple_button_id) {
+                if (leftButtonId == button_two_id) {
                     startActivityForResult(intent, SERVICE_SELECTOR_LEFT_ACTIVITY);
                 } else {
                     startActivityForResult(intent, SERVICE_SELECTOR_RIGHT_ACTIVITY);
                 }
             }
         });
-
         updatePlaylistSelector();
     }
 
@@ -264,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
                 ImageButton buttonToSwap;
                 if (requestCode == SERVICE_SELECTOR_LEFT_ACTIVITY) {
                     buttonToSwap = (ImageButton)layout.getChildAt(0);
+                    clearCheckboxes();
                 } else {
                     buttonToSwap = (ImageButton) layout.getChildAt(2);
                 }
@@ -284,12 +287,7 @@ public class MainActivity extends AppCompatActivity {
                 SpotifyPreferences.with(getApplicationContext()).setSpotifyUserToken(mAccessToken);
             }
         }
-
-        LinearLayout layout = findViewById(R.id.transfer_icon_list);
-        ImageButton leftButton = (ImageButton)layout.getChildAt(0);
         updatePlaylistSelector();
-
-
     }
 
     private void cancelCall() {
@@ -321,6 +319,8 @@ public class MainActivity extends AppCompatActivity {
 
                         playlistIds.clear();
                         playlistNames.clear();
+                        checked_playlist_ids.clear();
+                        checked_playlists.clear();
 
                         for (int i = 0; i < items.length(); i++) {
                             JSONObject p = items.getJSONObject(i);
@@ -364,6 +364,8 @@ public class MainActivity extends AppCompatActivity {
 
                     playlistNames.clear();
                     playlistIds.clear();
+                    checked_playlist_ids.clear();
+                    checked_playlists.clear();
 
                     for (int i = 0; i < playlists.length(); i++) {
                         JSONObject playlist = playlists.getJSONObject(i);
@@ -388,17 +390,39 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updatePlaylistSelector() {
+    private void updateSyncTransferButtons() {
         LinearLayout layout = findViewById(R.id.transfer_icon_list);
         ImageButton leftButton = (ImageButton)layout.getChildAt(0);
         ImageButton rightButton = (ImageButton)layout.getChildAt(2);
         Button transferButton = findViewById(R.id.transfer_button);
         Button syncButton = findViewById(R.id.sync_button);
 
-        if (leftButton.getTag() != null && rightButton.getTag() != null) {
+        if (leftButton.getTag() != null && rightButton.getTag() != null && checked_playlists.size() > 0) {
             transferButton.setEnabled(true);
             syncButton.setEnabled(true);
+        } else {
+            transferButton.setEnabled(false);
+            syncButton.setEnabled(false);
         }
+    }
+
+    private void clearCheckboxes() {
+        Log.println(Log.DEBUG, "grace", "in clearCheckboxes() method");
+        GridView grid_view = (GridView)findViewById(R.id.playlist_selector);
+        for(int i = 0; i < grid_view.getChildCount(); i++){
+            Log.println(Log.DEBUG, "grace", grid_view.getChildAt(i).toString()); // You should probably cast to your adapter's item type
+            CheckedTextView checked_text = (CheckedTextView)grid_view.getChildAt(i);
+            checked_text.setChecked(false);
+        }
+        checked_playlist_ids.clear();
+        checked_playlists.clear();
+        updateSyncTransferButtons();
+    }
+
+    private void updatePlaylistSelector() {
+        LinearLayout layout = findViewById(R.id.transfer_icon_list);
+        ImageButton leftButton = (ImageButton)layout.getChildAt(0);
+        updateSyncTransferButtons();
 
         if (leftButton.getTag() != null && leftButton.getTag().equals("apple_button")) {
             Log.d("Playlist Selector", "Left button is Apple Music; adding playlists");
@@ -421,7 +445,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (leftButton.getTag().equals("spotify_button")) {
             Log.d("Transfer", "Transferring Spotify Playlists");
-            b.putString("transfer_type", "Transferring");
             b.putString("mAccessToken", mAccessToken);
             b.putString("userId", userId);
             b.putSerializable("transferFrom", Service.SPOTIFY);
