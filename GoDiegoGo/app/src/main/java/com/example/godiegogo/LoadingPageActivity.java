@@ -118,10 +118,7 @@ public class LoadingPageActivity extends AppCompatActivity {
         //If user is syncing, set the transfer button text accordingly
         final Button transferButton = findViewById(R.id.confirm_transfer);
         String transferType = b.getString("transfer_type");
-        if (transferType.equals("Syncing")) {
-            Log.println(Log.DEBUG, "tag", "setting the transfer button text");
-            transferButton.setText("Sync");
-        }
+
         // Set listener for confirm transfer button
         transferButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -137,7 +134,7 @@ public class LoadingPageActivity extends AppCompatActivity {
                 b.putInt("current_playlist", currentPlaylist);
                 b.putStringArrayList("checked_playlists", checkedPlaylists);
                 b.putStringArrayList("checked_playlist_ids", checkedPlaylistIds);
-                b.putString("transfer_type", "Transferring");
+                b.putString("transfer_type", transferType);
                 b.putString("mAccessToken", mAccessToken);
                 b.putString("userId", userId);
                 b.putSerializable("transferTo", transferTo);

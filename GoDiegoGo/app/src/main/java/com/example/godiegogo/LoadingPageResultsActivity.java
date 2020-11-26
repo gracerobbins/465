@@ -49,13 +49,18 @@ public class LoadingPageResultsActivity extends AppCompatActivity {
 
         final Button button = findViewById(R.id.main_menu_button);
         if (morePlaylists) {
-            button.setText("Transfer next playlist");
+            if (transfer_type.equals("Syncing")) {
+                button.setText("Sync next playlist");
+            } else {
+                button.setText("Transfer next playlist");
+            }
         }
         button.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 if (morePlaylists) {
                     b.putInt("current_playlist", currentPlaylist + 1);
+                    b.putString("transfer_type", transfer_type);
                     Intent intent = new Intent(LoadingPageResultsActivity.this, LoadingPageActivity.class);
                     intent.putExtras(b);
                     startActivity(intent);

@@ -95,7 +95,7 @@
                 android:layout_weight="5"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/dark_spring_green"
-                android:text="Transfer"
+                android:text="Confirm"
                 android:layout_gravity="center_horizontal|bottom">
             </Button>
             <Space
